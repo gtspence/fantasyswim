@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Fantasy Swimming: Rio Olympics</title>
+    </head>
+
+    <body>
+        <h1>Welcome!</h1>
+        
+        {% if user.is_authenticated %}
+			<h2>Hello {{ user.username }}!</h2>
+			<a href="/rio/logout/">Logout</a><br />
+		{% else %}
+			<h2>Login or Register!</h2>
+			<a href="/rio/login/">Login</a> |
+	        <a href="/rio/register/">Register</a>
+		{% endif %}
+    </body>
+</html>

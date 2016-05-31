@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Fantasy Swimming: Rio Olympics</title>
+    </head>
+
+    <body>
+        <h1>Register</h1>
+
+        {% if registered %}
+        FantasySwimming says: <strong>thank you for registering!</strong>
+        <a href="/rio/">Return to the homepage.</a><br />
+        {% else %}
+        FantasySwimming says: <strong>Register here!</strong><br />
+
+        <form id="user_form" method="post" action="/rio/register/"
+                enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+            {{ user_form.as_p }}
+            {{ profile_form.as_p }}
+
+            <!-- Provide a button to click to submit the form. -->
+            <input type="submit" name="submit" value="Register" />
+        </form>
+        {% endif %}
+    </body>
+</html>
