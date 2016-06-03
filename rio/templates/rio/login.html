@@ -3,7 +3,7 @@
 {% block content %}
 
 {% if form.errors %}
-<p>Your username and password didn't match. Please try again.</p>
+<p>Username/password incorrect. Please try again.</p>
 {% endif %}
 
 <!-- 
@@ -34,7 +34,7 @@
 <input type="hidden" name="next" value="/rio/" />
 </form>
 
-<p><a href="/rio/password_reset/">Forgotten password?</a></p>
+<p><a href="/rio/password_reset/">Forgotten username or password?</a></p>
 
 {% endblock %}
 

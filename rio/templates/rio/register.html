@@ -4,12 +4,6 @@
 
         <h1>Register</h1>
 
-        {% if registered %}
-        FantasySwimming says: <strong>thank you for registering!</strong>
-        
-        <p><a href="/rio/login">Login</a></p>
-        
-        {% else %}
         FantasySwimming says: <strong>Register here!</strong><br />
 
         <form id="user_form" method="post" action="/rio/register/"
@@ -22,5 +16,4 @@
             <!-- Provide a button to click to submit the form. -->
             <input type="submit" name="submit" value="Register" />
         </form>
-        {% endif %}
 {% endblock %}
