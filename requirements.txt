@@ -1,4 +1,6 @@
+dj-database-url==0.4.1
 Django==1.9.6
-gunicorn==19.4.5
-whitenoise==2.0.6
 django-dotenv==1.4.1
+gunicorn==19.4.5
+wheel==0.26.0
+whitenoise==2.0.6

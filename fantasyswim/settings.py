@@ -131,6 +131,12 @@ SERVER_EMAIL = EMAIL_HOST_USER
 #EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 
+# Update database configuration with $DATABASE_URL.
+import dj_database_url
+db_from_env = dj_database_url.config()
+DATABASES['default'].update(db_from_env)
+
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
