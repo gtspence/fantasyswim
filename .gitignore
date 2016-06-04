@@ -3,3 +3,4 @@ env
 staticfiles
 .env
 .DS_Store
+db.sqlite3
