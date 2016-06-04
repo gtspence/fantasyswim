@@ -15,5 +15,3 @@ class UserCreateForm(UserCreationForm):
         if commit:
             user.save()
         return user
-
-#from .models import UserProfile
