@@ -9,13 +9,13 @@ class Team(models.Model):
 		return self.name
 
 class Event(models.Model):
-	event = models.CharField(max_length=50)
+	name = models.CharField(max_length=50)
 	date = models.DateField("Date of Final", null=True, blank=True)
 	def __str__(self):
-		return self.event
+		return self.name
 # 	def event_complete(self):
-# 		today = datetime.today()
-# 		return self.date < today	#NB ISSUE WITH TIMEZONES ETC!!! 
+# 		now = datetime.now()
+# 		return self.date < now	#NB ISSUE WITH TIMEZONES ETC!!! 
 # 	was_published_recently.admin_order_field = 'date'
 # 	was_published_recently.boolean = True
 # 	was_published_recently.short_description = 'Has final of event been swum?'
