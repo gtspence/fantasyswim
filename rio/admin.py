@@ -11,7 +11,7 @@ class ParticipantInline(admin.TabularInline):
 	extra = 1
 
 class EventAdmin(admin.ModelAdmin):
-	list_display = ('event', 'date')
+	list_display = ('event', 'date') #(add event_complete ?)
 	inlines = [ParticipantInline]
 
 class ParticipantAdmin(admin.ModelAdmin):
