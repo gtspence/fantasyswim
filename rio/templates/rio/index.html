@@ -6,7 +6,9 @@
         {% if user.is_authenticated %}
 			<h2>Hello {{ user.username }}!</h2>
 			<a href="/rio/logout/">Logout</a> |
-			<a href="/rio/password_change">Change password</a><br />
+			<a href="/rio/password_change">Change password</a> |
+			<a href="/rio/team_create">Create team</a>
+			<br />
 		{% else %}
 			<h2>Login or Register!</h2>
 			<a href="/rio/login/">Login</a> |
