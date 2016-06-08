@@ -52,12 +52,13 @@ def team_create(request):
 	event_list = Event.objects.all() 
 	if request.method == "POST":
 		create_form = TeamCreateForm(request.POST)
-		choice_form_list = [ChoiceCreateForm(event, request.POST) for event in event_list]
+		choice_form_list = [ChoiceCreateForm(event, request.POST, prefix=str(idx)) for idx, event in enumerate(event_list)]
 		if create_form.is_valid() and all([choice_form.is_valid() for choice_form in choice_form_list]):
 			team = create_form.save(commit=False)
 			team.user = request.user
 			team.save()
 			for choice_form in choice_form_list:
+			#	if choice_form.is_valid(): # and delete above if you want optional
 				choice = choice_form.save(commit=False)
 				choice.team = team
 				choice.event = choice_form.event
@@ -65,7 +66,7 @@ def team_create(request):
 			return HttpResponseRedirect('/rio/')
 	else:
 		create_form = TeamCreateForm()
-		choice_form_list = [ChoiceCreateForm(event) for event in event_list]
+		choice_form_list = [ChoiceCreateForm(event, prefix=str(idx)) for idx, event in enumerate(event_list)]
 		
 	return render(request, 'rio/create_team.html', 
 					{'create_form': create_form, 
