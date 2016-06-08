@@ -32,6 +32,7 @@ urlpatterns = [
 	url(r'^password_change/done/$', auth_views.password_change,
     	{'template_name':'rio/password_change_done.html',
         }, name="password_change_done"),
+    url(r'^team_create/$', views.team_create, name='team_create'),
 ]
 
 

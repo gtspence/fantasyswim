@@ -1,10 +1,10 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader, RequestContext
-from django.shortcuts import render_to_response
+from django.shortcuts import render, render_to_response
 from django.contrib.auth import authenticate, login
-from .forms import UserCreateForm
+from .forms import UserCreateForm, TeamCreateForm, ChoiceCreateForm
 from django.contrib.auth.decorators import login_required
-
+from .models import Team, Event, Swimmer, Participant, Choice
 
 
 def index(request):
@@ -12,9 +12,9 @@ def index(request):
 	context = {
 	}
 	return HttpResponse(template.render(context, request))
-    
+	
 
-    
+
 def register(request):
 	context = RequestContext(request)
 	
@@ -46,3 +46,29 @@ def register(request):
 		{'user_form':user_form, 'title': 'Register'},
 		context)
 		
+
+@login_required
+def team_create(request):
+	event_list = Event.objects.all() 
+	if request.method == "POST":
+		create_form = TeamCreateForm(request.POST)
+		choice_form_list = [ChoiceCreateForm(event, request.POST, prefix=str(idx)) for idx, event in enumerate(event_list)]
+		if create_form.is_valid() and all([choice_form.is_valid() for choice_form in choice_form_list]):
+			team = create_form.save(commit=False)
+			team.user = request.user
+			team.save()
+			for choice_form in choice_form_list:
+			#	if choice_form.is_valid(): # and delete above if you want optional
+				choice = choice_form.save(commit=False)
+				choice.team = team
+				choice.event = choice_form.event
+				choice.save()
+			return HttpResponseRedirect('/rio/')
+	else:
+		create_form = TeamCreateForm()
+		choice_form_list = [ChoiceCreateForm(event, prefix=str(idx)) for idx, event in enumerate(event_list)]
+		
+	return render(request, 'rio/create_team.html', 
+					{'create_form': create_form, 
+					'choice_form_list': choice_form_list,
+					'event_list': event_list})

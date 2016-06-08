@@ -4,7 +4,7 @@ from datetime import datetime
 
 class Team(models.Model):
     user = models.ForeignKey(User)
-    name = models.CharField(max_length=200)
+    name = models.CharField("Team Name", max_length=200)
     def __str__(self):
 		return self.name
 
@@ -32,6 +32,8 @@ class Participant(models.Model):
 	time=models.CharField("Season Best", max_length=50)
 	STATUS_CHOICES = (('Y', 'Yes'), ('N', 'No'),)
 	status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='N')
+	def __str__(self):
+		return '%s %s %s (Confirmed: %s)' % (self.swimmer.name, self.swimmer.country, self.time, self.status)
 	
 class Choice(models.Model):
 	team = models.ForeignKey(Team)

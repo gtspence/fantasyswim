@@ -1,0 +1,23 @@
+{% extends "rio/base.html" %}
+
+{% block content %}
+        <h1>Create Team</h1>
+
+        FantasySwimming says: <strong>Create your team!</strong><br />
+
+        <form method="post" action="/rio/team_create/"
+                enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+            {{ create_form.as_p }}
+
+			{% for choice_form in choice_form_list %}
+				<strong>{{ choice_form.event.name }}</strong>
+				{{ choice_form.as_p }}
+			{% endfor %}
+           
+            <!-- Provide a button to click to submit the form. -->
+            <input type="submit" name="submit" value="Save" />
+        </form>
+{% endblock %}
