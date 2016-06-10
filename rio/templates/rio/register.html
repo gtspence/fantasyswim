@@ -6,7 +6,7 @@
 
         FantasySwimming says: <strong>Register here!</strong><br />
 
-        <form id="user_form" method="post" action="/rio/register/"
+        <form id="user_form" method="post" action="{% url 'register' %}"
                 enctype="multipart/form-data">
 
             {% csrf_token %}
