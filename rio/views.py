@@ -68,7 +68,8 @@ def team_create(request):
 		create_form = TeamCreateForm()
 		choice_form_list = [ChoiceCreateForm(event, prefix=str(idx)) for idx, event in enumerate(event_list)]
 		
-	return render(request, 'rio/create_team.html', 
+	return render(request, 'rio/team_create.html', 
 					{'create_form': create_form, 
 					'choice_form_list': choice_form_list,
-					'event_list': event_list})
+					'event_list': event_list,
+					'title': 'Create team'})

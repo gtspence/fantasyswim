@@ -5,7 +5,7 @@
 
         FantasySwimming says: <strong>Create your team!</strong><br />
 
-        <form method="post" action="/rio/team_create/"
+        <form method="post" action="{% url 'team_create' %}"
                 enctype="multipart/form-data">
 
             {% csrf_token %}
