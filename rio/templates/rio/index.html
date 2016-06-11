@@ -15,5 +15,14 @@
 	        <a href="{% url 'register' %}">Register</a>
 		{% endif %}
 
+{% if team_list %}
+	<ul>
+	{% for team in team_list %}
+		<li><a href="{% url 'team' team.id %}">{{ team.name }}</a> | {{ team.user }}</li>
+	{% endfor %}
+	</ul>
+{% else %}
+	<p>No teams yet!</p>
+{% endif %}
 
 {% endblock %}
