@@ -1,0 +1,16 @@
+{% extends "rio/base.html" %}
+
+{% block content %}
+        <h1>Event {{ event.name }}</h1>
+
+
+		<h2>Choices:</h2>
+	<ul>
+	{% for choice in event.choice_set.all %}
+	<li><a href="{{ choice.team.get_absolute_url }}">{{ choice.team.name }}</a> | {{ choice.team.user }}: {{ choice.participant }}</li>
+	{% endfor %}
+	</ul>
+
+{% endblock %}
+
+<li><a href="{{ team.get_absolute_url }}">{{ team.name }}</a> | {{ team.user }}</li>

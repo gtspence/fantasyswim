@@ -16,12 +16,23 @@ class IndexView(generic.ListView):
 	def get_queryset(self):
 		"""Return all the teams."""
 		return Team.objects.all() #switch to order_by('score')
+	
+	def get_context_data(self, *args, **kwargs):
+		context = super(IndexView, self).get_context_data(*args, **kwargs)
+		context['event_list'] = Event.objects.all()
+		return context
 
 
 @method_decorator(login_required, name='dispatch')
 class TeamView(generic.DetailView):
-    model = Team
-    template_name = 'rio/team.html'
+	model = Team
+	template_name = 'rio/team.html'
+
+
+@method_decorator(login_required, name='dispatch')
+class EventView(generic.DetailView):
+	model = Event
+	template_name = 'rio/event.html'
 
 
 def register(request):
@@ -71,7 +82,7 @@ def team_edit(request, id=None):
 					choice.team = team
 					choice.event = choice_form.event
 					choice.save()
-			return HttpResponseRedirect(reverse('team', args=(team.id,)))
+			return HttpResponseRedirect(team.get_absolute_url())
 		
 	return render(request, 'rio/team_edit.html', 
 					{'edit_form': edit_form, 

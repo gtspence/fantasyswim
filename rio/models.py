@@ -1,17 +1,23 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 
 class Team(models.Model):
-    user = models.ForeignKey(User)
-    name = models.CharField("Team Name", max_length=200)
-    def __str__(self):
+	user = models.ForeignKey(User)
+	name = models.CharField("Team Name", max_length=200)
+	def __str__(self):
 		return self.name
+	def get_absolute_url(self):
+		return reverse('team', args=(self.id,))
+
 
 class Event(models.Model):
 	name = models.CharField(max_length=50)
 	date = models.DateField("Date of Final", null=True, blank=True)
 	def __str__(self):
 		return self.name
+	def get_absolute_url(self):
+		return reverse('event', args=(self.id,))
 	
 class Swimmer(models.Model):
 	name = models.CharField(max_length=200)

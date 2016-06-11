@@ -15,14 +15,26 @@
 	        <a href="{% url 'register' %}">Register</a>
 		{% endif %}
 
+<h2>Teams</h2>
+
 {% if team_list %}
 	<ul>
 	{% for team in team_list %}
-		<li><a href="{% url 'team' team.id %}">{{ team.name }}</a> | {{ team.user }}</li>
+		<li><a href="{{ team.get_absolute_url }}">{{ team.name }}</a> | {{ team.user }}</li>
 	{% endfor %}
 	</ul>
 {% else %}
 	<p>No teams yet!</p>
 {% endif %}
+
+<h2>Events</h2>
+
+<ul>
+{% for event in event_list %}
+	<li><a href="{{ event.get_absolute_url }}">{{ event.name }}</a></li>
+{% endfor %}
+</ul>
+
+
 
 {% endblock %}
