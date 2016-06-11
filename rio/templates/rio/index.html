@@ -7,7 +7,7 @@
 			<h2>Hello {{ user.username }}!</h2>
 			<a href="{% url 'logout' %}?next=/rio/"">Logout</a> |
 			<a href="{% url 'password_change' %}">Change password</a> |
-			<a href="{% url 'team_create' %}">Create team</a>
+			<a href="{% url 'team_new' %}">Create team</a>
 			<br />
 		{% else %}
 			<h2>Login or Register!</h2>

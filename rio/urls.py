@@ -9,5 +9,6 @@ urlpatterns = [
     url(r'^register/$', views.register, name='register'),
     url(r'^login/$', auth_views.login, {'extra_context': {'title': 'Login'}}, name='login'),
     url('^', include('django.contrib.auth.urls')),
-     url(r'^team_create/$', views.team_create, name='team_create'),
+    url(r'^team_new/$', views.team_edit, name='team_new'),
+	url(r'^team_edit/(?P<id>\d+)/$', views.team_edit, name='team_edit'),
 ]

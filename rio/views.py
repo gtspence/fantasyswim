@@ -1,12 +1,13 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.template import loader, RequestContext
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import authenticate, login
-from .forms import UserCreateForm, TeamCreateForm, ChoiceCreateForm
+from .forms import UserCreateForm, TeamEditForm, ChoiceEditForm
 from django.contrib.auth.decorators import login_required
 from .models import Team, Event, Swimmer, Participant, Choice
 from django.views import generic
 from django.utils.decorators import method_decorator
+from django.core.urlresolvers import reverse
 
 class IndexView(generic.ListView):
 	template_name = 'rio/index.html'
@@ -41,28 +42,37 @@ def register(request):
 		
 
 @login_required
-def team_create(request):
+def team_edit(request, id=None):
+	if id:
+		team = get_object_or_404(Team, pk=id)
+		if team.user != request.user:
+			return HttpResponseForbidden()
+	else:
+		team = Team(user=request.user)
+	
 	event_list = Event.objects.all() 
+	choices = Choice.objects.filter(team=team) #Requires choices to be ordered by event!!!
+	
+	edit_form = TeamEditForm(request.POST or None, instance=team)
+	if id:
+		choice_form_list = [ChoiceEditForm(event, request.POST or None, instance=choices[idx], prefix=str(idx)) for idx, event in enumerate(event_list)]
+	else:
+		choice_form_list = [ChoiceEditForm(event, request.POST or None, prefix=str(idx)) for idx, event in enumerate(event_list)]
+	
 	if request.method == "POST":
-		create_form = TeamCreateForm(request.POST)
-		choice_form_list = [ChoiceCreateForm(event, request.POST, prefix=str(idx)) for idx, event in enumerate(event_list)]
-		if create_form.is_valid() and all([choice_form.is_valid() for choice_form in choice_form_list]):
-			team = create_form.save(commit=False)
-			team.user = request.user
-			team.save()
+		if edit_form.is_valid() and all([choice_form.is_valid() for choice_form in choice_form_list]):
+			edit_form.save()
 			for choice_form in choice_form_list:
 			#	if choice_form.is_valid(): # and delete above if you want optional
 				choice = choice_form.save(commit=False)
 				choice.team = team
 				choice.event = choice_form.event
 				choice.save()
-			return HttpResponseRedirect('/rio/')
-	else:
-		create_form = TeamCreateForm()
-		choice_form_list = [ChoiceCreateForm(event, prefix=str(idx)) for idx, event in enumerate(event_list)]
+			return HttpResponseRedirect(reverse('team', args=(team.id,)))
 		
-	return render(request, 'rio/team_create.html', 
-					{'create_form': create_form, 
+	return render(request, 'rio/team_edit.html', 
+					{'edit_form': edit_form, 
 					'choice_form_list': choice_form_list,
 					'event_list': event_list,
-					'title': 'Create team'})
+					'title': 'Create/edit team'},
+					context_instance=RequestContext(request))

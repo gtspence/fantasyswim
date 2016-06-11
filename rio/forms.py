@@ -17,14 +17,14 @@ class UserCreateForm(UserCreationForm):
             user.save()
         return user
 
-class TeamCreateForm(forms.ModelForm):
+class TeamEditForm(forms.ModelForm):
 	class Meta:
 		model = Team
 		fields = ['name']
 	
-class ChoiceCreateForm(forms.ModelForm):
+class ChoiceEditForm(forms.ModelForm):
 	def __init__(self, event, *args, **kwargs):
-		super (ChoiceCreateForm, self ).__init__(*args, **kwargs)
+		super (ChoiceEditForm, self ).__init__(*args, **kwargs)
 		self.fields['participant'].queryset = Participant.objects.filter(event=event)
 		self.event = event
 		
