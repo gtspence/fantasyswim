@@ -6,16 +6,18 @@ from .forms import UserCreateForm, TeamCreateForm, ChoiceCreateForm
 from django.contrib.auth.decorators import login_required
 from .models import Team, Event, Swimmer, Participant, Choice
 from django.views import generic
+from django.utils.decorators import method_decorator
 
 class IndexView(generic.ListView):
-    template_name = 'rio/index.html'
-    context_object_name = 'team_list'
+	template_name = 'rio/index.html'
+	context_object_name = 'team_list'
 
-    def get_queryset(self):
-        """Return all the teams."""
-        return Team.objects.all() #switch to order_by('score')
+	def get_queryset(self):
+		"""Return all the teams."""
+		return Team.objects.all() #switch to order_by('score')
 
 
+@method_decorator(login_required, name='dispatch')
 class TeamView(generic.DetailView):
     model = Team
     template_name = 'rio/team.html'

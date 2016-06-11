@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-#from datetime import datetime
 
 class Team(models.Model):
     user = models.ForeignKey(User)
@@ -13,12 +12,6 @@ class Event(models.Model):
 	date = models.DateField("Date of Final", null=True, blank=True)
 	def __str__(self):
 		return self.name
-# 	def event_complete(self):
-# 		now = datetime.now()
-# 		return self.date < now	#NB ISSUE WITH TIMEZONES ETC!!! 
-# 	was_published_recently.admin_order_field = 'date'
-# 	was_published_recently.boolean = True
-# 	was_published_recently.short_description = 'Has final of event been swum?'
 	
 class Swimmer(models.Model):
 	name = models.CharField(max_length=200)

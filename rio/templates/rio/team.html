@@ -2,6 +2,11 @@
 
 {% block content %}
         <h1>Team {{ team.name }}</h1>
+
+    {% if user == team.user %}
+        <p>Edit your team</p>
+    {% endif %}
+
         
 		<h2>Choices:</h2>
 	<ul>

@@ -118,7 +118,7 @@ USE_TZ = True
 
 # Login URL
 LOGIN_URL = '/rio/login/'
-
+LOGIN_REDIRECT_URL = '/rio/'
 
 # Email settings
 EMAIL_USE_TLS = True
