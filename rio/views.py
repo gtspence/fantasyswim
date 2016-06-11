@@ -50,24 +50,27 @@ def team_edit(request, id=None):
 	else:
 		team = Team(user=request.user)
 	
-	event_list = Event.objects.all() 
-	choices = Choice.objects.filter(team=team) #Requires choices to be ordered by event!!!
-	
+	event_list = Event.objects.all()
+
 	edit_form = TeamEditForm(request.POST or None, instance=team)
-	if id:
-		choice_form_list = [ChoiceEditForm(event, request.POST or None, instance=choices[idx], prefix=str(idx)) for idx, event in enumerate(event_list)]
-	else:
-		choice_form_list = [ChoiceEditForm(event, request.POST or None, prefix=str(idx)) for idx, event in enumerate(event_list)]
 	
+	choice_form_list = []
+	for idx, event in enumerate(event_list):
+		if Choice.objects.filter(event=event, team=team).exists():
+			choice_form_list.append(ChoiceEditForm(event, request.POST or None, 
+									instance=Choice.objects.get(event=event, team=team), prefix=str(idx)))
+		else:
+			choice_form_list.append(ChoiceEditForm(event, request.POST or None, prefix=str(idx)))	
+
 	if request.method == "POST":
-		if edit_form.is_valid() and all([choice_form.is_valid() for choice_form in choice_form_list]):
+		if edit_form.is_valid(): # and all([choice_form.is_valid() for choice_form in choice_form_list]):
 			edit_form.save()
 			for choice_form in choice_form_list:
-			#	if choice_form.is_valid(): # and delete above if you want optional
-				choice = choice_form.save(commit=False)
-				choice.team = team
-				choice.event = choice_form.event
-				choice.save()
+				if choice_form.is_valid(): # and delete above if you want optional
+					choice = choice_form.save(commit=False)
+					choice.team = team
+					choice.event = choice_form.event
+					choice.save()
 			return HttpResponseRedirect(reverse('team', args=(team.id,)))
 		
 	return render(request, 'rio/team_edit.html', 

@@ -32,3 +32,5 @@ class Choice(models.Model):
 	team = models.ForeignKey(Team)
 	event = models.ForeignKey(Event)
 	participant = models.ForeignKey(Participant)
+	def __str__(self):
+		return '%s: %s' % (self.event.name, self.participant.swimmer.name)
