@@ -8,6 +8,7 @@ from .models import Team, Event, Swimmer, Participant, Choice
 from django.views import generic
 from django.utils.decorators import method_decorator
 from django.core.urlresolvers import reverse
+#from django.db.models import Count
 
 class IndexView(generic.ListView):
 	template_name = 'rio/index.html'
@@ -20,7 +21,14 @@ class IndexView(generic.ListView):
 	def get_context_data(self, *args, **kwargs):
 		context = super(IndexView, self).get_context_data(*args, **kwargs)
 		context['event_list'] = Event.objects.all()
+		if self.request.user.is_authenticated():
+			try:
+				context['user_team'] = Team.objects.get(user=self.request.user)
+			except Team.DoesNotExist:
+				context['user_team'] = None
 		return context
+
+
 
 
 @method_decorator(login_required, name='dispatch')
@@ -33,7 +41,13 @@ class TeamView(generic.DetailView):
 class EventView(generic.DetailView):
 	model = Event
 	template_name = 'rio/event.html'
-
+	
+# 	def get_context_data(self, *args, **kwargs):
+# 		context = super(EventView, self).get_context_data(*args, **kwargs)
+# 		context['common_choice'] = Participant.objects.filter(event=self.event).annotate(c=Count('choice')).order_by('-c')[0] 
+# 		return context
+## Doesn't work with self.event.... https://docs.djangoproject.com/en/1.9/topics/class-based-views/generic-display/#dynamic-filtering
+## What about ties? https://docs.djangoproject.com/en/1.9/topics/db/aggregation/
 
 def register(request):
 	context = RequestContext(request)
@@ -59,6 +73,8 @@ def team_edit(request, id=None):
 		if team.user != request.user:
 			return HttpResponseForbidden()
 	else:
+		if Team.objects.filter(user=request.user).exists():
+			return HttpResponseRedirect(request.user.team.get_absolute_url())
 		team = Team(user=request.user)
 	
 	event_list = Event.objects.all()

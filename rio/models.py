@@ -3,8 +3,9 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 
 class Team(models.Model):
-	user = models.ForeignKey(User)
+	user = models.OneToOneField(User)
 	name = models.CharField("Team Name", max_length=200)
+	score = models.IntegerField(default=0)
 	def __str__(self):
 		return self.name
 	def get_absolute_url(self):
@@ -38,5 +39,6 @@ class Choice(models.Model):
 	team = models.ForeignKey(Team)
 	event = models.ForeignKey(Event)
 	participant = models.ForeignKey(Participant)
+	points = models.IntegerField(null=True, blank=True)
 	def __str__(self):
 		return '%s: %s' % (self.event.name, self.participant.swimmer.name)

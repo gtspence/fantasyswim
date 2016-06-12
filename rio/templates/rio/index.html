@@ -6,9 +6,13 @@
         {% if user.is_authenticated %}
 			<h2>Hello {{ user.username }}!</h2>
 			<a href="{% url 'logout' %}?next=/rio/"">Logout</a> |
-			<a href="{% url 'password_change' %}">Change password</a> |
-			<a href="{% url 'team_new' %}">Create team</a>
+			<a href="{% url 'password_change' %}">Change password</a>
 			<br />
+			{% if user_team %}
+			<a href="{{ user_team.get_absolute_url }}">Edit your team</a>
+			{% else %}
+			<a href="{% url 'team_new' %}">Create team</a>
+			{% endif %}
 		{% else %}
 			<h2>Login or Register!</h2>
 			<a href="{% url 'login' %}">Login</a> |

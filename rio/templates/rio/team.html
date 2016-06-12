@@ -1,7 +1,7 @@
 {% extends "rio/base.html" %}
 
 {% block content %}
-        <h1>Team {{ team.name }}</h1>
+        <h1>Team: {{ team.name }}</h1>
 
     {% if user == team.user %}
         <a href="{% url 'team_edit' team.id %}"">Edit your team</a>
