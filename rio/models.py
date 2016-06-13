@@ -5,16 +5,21 @@ from django.core.urlresolvers import reverse
 class Team(models.Model):
 	user = models.OneToOneField(User)
 	name = models.CharField("Team Name", max_length=200)
-	score = models.IntegerField(default=0)
+	correct_golds = models.IntegerField(default=0)
 	def __str__(self):
 		return self.name
 	def get_absolute_url(self):
 		return reverse('team', args=(self.id,))
+	def points(self):
+		team_choices = self.choice_set.all()
+		team_points = [ch.participant.points for ch in team_choices]
+		return sum(filter(None, team_points))
 
 
 class Event(models.Model):
 	name = models.CharField(max_length=50)
 	date = models.DateField("Date of Final", null=True, blank=True)
+	relay = models.BooleanField(default=False)
 	def __str__(self):
 		return self.name
 	def get_absolute_url(self):
@@ -29,9 +34,10 @@ class Swimmer(models.Model):
 class Participant(models.Model):
 	event = models.ForeignKey(Event)
 	swimmer = models.ForeignKey(Swimmer)
-	time=models.CharField("Season Best", max_length=50)
+	time = models.CharField("Season Best", max_length=50)
 	STATUS_CHOICES = (('Y', 'Yes'), ('N', 'No'),)
 	status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='N')
+	points = models.IntegerField(null=True, blank=True)
 	def __str__(self):
 		return '%s %s %s (Confirmed: %s)' % (self.swimmer.name, self.swimmer.country, self.time, self.status)
 	
@@ -39,6 +45,7 @@ class Choice(models.Model):
 	team = models.ForeignKey(Team)
 	event = models.ForeignKey(Event)
 	participant = models.ForeignKey(Participant)
-	points = models.IntegerField(null=True, blank=True)
+	def points(self):
+		return self.participant.points
 	def __str__(self):
 		return '%s: %s' % (self.event.name, self.participant.swimmer.name)

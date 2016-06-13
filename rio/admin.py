@@ -15,7 +15,7 @@ class EventAdmin(admin.ModelAdmin):
 	inlines = [ParticipantInline]
 
 class ParticipantAdmin(admin.ModelAdmin):
-	list_display = ('event', 'swimmer', 'time', 'status')
+	list_display = ('event', 'swimmer', 'time', 'status', 'points')
 	list_filter = ['event']
 
 class SwimmerAdmin(admin.ModelAdmin):
@@ -24,10 +24,15 @@ class SwimmerAdmin(admin.ModelAdmin):
 	inlines = [ParticipantInline]
 
 class TeamAdmin(admin.ModelAdmin):
-	list_display = ('user', 'name')
+	list_display = ('user', 'name', 'points', 'correct_golds')
 	inlines = [ChoiceInline]
+ 
+class ChoiceAdmin(admin.ModelAdmin):
+	list_display = ('event', 'team', 'participant', 'points')
+	list_filter = ['participant']
  
 admin.site.register(Event, EventAdmin)
 admin.site.register(Participant, ParticipantAdmin)
 admin.site.register(Swimmer, SwimmerAdmin)
 admin.site.register(Team, TeamAdmin)
+admin.site.register(Choice, ChoiceAdmin)
