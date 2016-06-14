@@ -11,7 +11,7 @@
 		<h2>Choices:</h2>
 	<ul>
 	{% for choice in team.choice_set.all %}
-	<li>{{ choice.event }}: {{ choice.participant }}</li>
+	<li><a href="{{ choice.event.get_absolute_url }}">{{ choice.event }}</a>: {{ choice.participant }}</li>
 	{% endfor %}
 	</ul>
 

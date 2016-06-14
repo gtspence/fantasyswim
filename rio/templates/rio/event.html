@@ -11,6 +11,13 @@
 	<li><a href="{{ choice.team.get_absolute_url }}">{{ choice.team.name }}</a> | {{ choice.team.user }}: {{ choice.participant }}</li>
 	{% endfor %}
 	</ul>
+	
+	<h2>Potential participants:</h2>
+	<ul>
+	{% for participant in event.participant_set.all %}
+	<li> {{ participant }}</li>
+	{% endfor %}
+	</ul>
 
 {% endblock %}
 

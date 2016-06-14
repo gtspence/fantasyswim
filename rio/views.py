@@ -29,8 +29,6 @@ class IndexView(generic.ListView):
 		return context
 
 
-
-
 @method_decorator(login_required, name='dispatch')
 class TeamView(generic.DetailView):
 	model = Team

@@ -5,7 +5,6 @@ from django.core.urlresolvers import reverse
 class Team(models.Model):
 	user = models.OneToOneField(User)
 	name = models.CharField("Team Name", max_length=200)
-	correct_golds = models.IntegerField(default=0)
 	def __str__(self):
 		return self.name
 	def get_absolute_url(self):
@@ -14,6 +13,10 @@ class Team(models.Model):
 		team_choices = self.choice_set.all()
 		team_points = [ch.participant.points for ch in team_choices]
 		return sum(filter(None, team_points))
+	def correct_golds(self):
+		team_choices = self.choice_set.all()
+		team_points = [ch.participant.points for ch in team_choices]
+		return sum([x==5 for x in team_points])
 
 
 class Event(models.Model):
@@ -40,6 +43,8 @@ class Participant(models.Model):
 	points = models.IntegerField(null=True, blank=True)
 	def __str__(self):
 		return '%s %s %s (Confirmed: %s)' % (self.swimmer.name, self.swimmer.country, self.time, self.status)
+	class Meta:
+		unique_together = ('event', 'swimmer')
 	
 class Choice(models.Model):
 	team = models.ForeignKey(Team)
@@ -49,3 +54,5 @@ class Choice(models.Model):
 		return self.participant.points
 	def __str__(self):
 		return '%s: %s' % (self.event.name, self.participant.swimmer.name)
+	class Meta:
+		unique_together = ('team', 'event')
