@@ -13,10 +13,10 @@ class Team(models.Model):
 		team_choices = self.choice_set.all()
 		team_points = [ch.participant.points for ch in team_choices]
 		return sum(filter(None, team_points))
-	def correct_golds(self):
-		team_choices = self.choice_set.all()
-		team_points = [ch.participant.points for ch in team_choices]
-		return sum([x==5 for x in team_points])
+# 	def correct_golds(self):
+# 		team_choices = self.choice_set.all()
+# 		team_points = [ch.participant.points for ch in team_choices]
+# 		return sum([x==5 for x in team_points])
 
 
 class Event(models.Model):
