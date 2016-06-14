@@ -34,19 +34,28 @@ class Swimmer(models.Model):
 	def __str__(self):
 		return self.name
 
+def time_converter(t):
+	minutes = t / 6000
+	remain = t - minutes*6000
+	seconds = remain / 100
+	hundredths = remain - seconds*100
+	if minutes == 0:
+		return str(seconds) + "." + str(hundredths)
+	else:
+		return str(minutes) + ":" + str(seconds).zfill(2) + "." + str(hundredths).zfill(2)
+
 class Participant(models.Model):
 	event = models.ForeignKey(Event)
 	swimmer = models.ForeignKey(Swimmer)
-	time_display = models.CharField("Season Best", max_length=50)
-	time_full = models.CharField(max_length=50, null=True, blank=True)
+	time = models.IntegerField("Season Best", null=True, blank=True)
 	STATUS_CHOICES = (('Y', 'Yes'), ('N', 'No'),)
 	status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='N')
 	points = models.IntegerField(null=True, blank=True)
 	def __str__(self):
-		return '%s %s %s (Confirmed: %s)' % (self.swimmer.name, self.swimmer.country, self.time_display, self.status)
+		return '%s %s %s (Confirmed: %s)' % (self.swimmer.name, self.swimmer.country, time_converter(self.time), self.status)
 	class Meta:
 		unique_together = ('event', 'swimmer')
-		ordering = ['time_full']
+		ordering = ['time']
 	
 class Choice(models.Model):
 	team = models.ForeignKey(Team)

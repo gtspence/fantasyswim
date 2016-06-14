@@ -15,7 +15,7 @@ class EventAdmin(admin.ModelAdmin):
 	inlines = [ParticipantInline]
 
 class ParticipantAdmin(admin.ModelAdmin):
-	list_display = ('event', 'swimmer', 'time_display', 'status', 'points')
+	list_display = ('event', 'swimmer', 'time', 'status', 'points')
 	list_filter = ['event']
 
 class SwimmerAdmin(admin.ModelAdmin):
