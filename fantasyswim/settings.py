@@ -75,10 +75,15 @@ WSGI_APPLICATION = 'fantasyswim.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'fantasyswimming',
+        'USER': 'graeme',
+        'PASSWORD': '',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
@@ -132,9 +137,9 @@ SERVER_EMAIL = EMAIL_HOST_USER
 
 
 # Update database configuration with $DATABASE_URL.
-import dj_database_url
-db_from_env = dj_database_url.config()
-DATABASES['default'].update(db_from_env)
+# import dj_database_url
+# db_from_env = dj_database_url.config('postgres://graeme@localhost:5432/fantasyswimming')
+# DATABASES['default'].update(db_from_env)
 
 
 # Static files (CSS, JavaScript, Images)

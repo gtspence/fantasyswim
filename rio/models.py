@@ -13,10 +13,10 @@ class Team(models.Model):
 		team_choices = self.choice_set.all()
 		team_points = [ch.participant.points for ch in team_choices]
 		return sum(filter(None, team_points))
-# 	def correct_golds(self):
-# 		team_choices = self.choice_set.all()
-# 		team_points = [ch.participant.points for ch in team_choices]
-# 		return sum([x==5 for x in team_points])
+	def correct_golds(self):
+		team_choices = self.choice_set.all()
+		team_points = [ch.participant.points for ch in team_choices]
+		return sum([x==5 for x in team_points])
 
 
 class Event(models.Model):
@@ -37,14 +37,16 @@ class Swimmer(models.Model):
 class Participant(models.Model):
 	event = models.ForeignKey(Event)
 	swimmer = models.ForeignKey(Swimmer)
-	time = models.CharField("Season Best", max_length=50)
+	time_display = models.CharField("Season Best", max_length=50)
+	time_full = models.CharField(max_length=50, null=True, blank=True)
 	STATUS_CHOICES = (('Y', 'Yes'), ('N', 'No'),)
 	status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='N')
 	points = models.IntegerField(null=True, blank=True)
 	def __str__(self):
-		return '%s %s %s (Confirmed: %s)' % (self.swimmer.name, self.swimmer.country, self.time, self.status)
+		return '%s %s %s (Confirmed: %s)' % (self.swimmer.name, self.swimmer.country, self.time_display, self.status)
 	class Meta:
 		unique_together = ('event', 'swimmer')
+		ordering = ['time_full']
 	
 class Choice(models.Model):
 	team = models.ForeignKey(Team)
