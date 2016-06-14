@@ -28,7 +28,7 @@ class TeamAdmin(admin.ModelAdmin):
 	inlines = [ChoiceInline]
  
 class ChoiceAdmin(admin.ModelAdmin):
-	list_display = ('event', 'team', 'participant', 'points')
+	list_display = ('event', 'team', 'participant')
 	list_filter = ['participant']
  
 admin.site.register(Event, EventAdmin)
