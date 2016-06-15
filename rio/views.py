@@ -16,7 +16,7 @@ class IndexView(generic.ListView):
 
 	def get_queryset(self):
 		"""Return all the teams."""
-		return Team.objects.all() #switch to order_by('score')
+		return Team.objects.all()
 	
 	def get_context_data(self, *args, **kwargs):
 		context = super(IndexView, self).get_context_data(*args, **kwargs)
@@ -33,7 +33,19 @@ class IndexView(generic.ListView):
 class TeamView(generic.DetailView):
 	model = Team
 	template_name = 'rio/team.html'
-
+				
+	def get_context_data(self, **kwargs):
+		context = super(TeamView, self).get_context_data(**kwargs)
+		event_list = Event.objects.all()
+		team_choice_all_events = []
+		for event in event_list:
+			try:
+				team_choice_all_events.append(Choice.objects.get(event=event, team=context['team']))
+			except Choice.DoesNotExist:
+				team_choice_all_events.append(None)
+		context['team_choice_per_event'] = zip(event_list, team_choice_all_events)
+		return context
+		
 
 @method_decorator(login_required, name='dispatch')
 class EventView(generic.DetailView):

@@ -6,21 +6,32 @@
     {% if user == team.user %}
         <a href="{% url 'team_edit' team.id %}"">Edit your team</a>
     {% endif %}
+    
+	<h2>Choices:</h2>
 
-        
-		<h2>Choices:</h2>
 	<ul>
-	{% for choice in team.choice_set.all %}
-	<li><a href="{{ choice.event.get_absolute_url }}">{{ choice.event }}</a>: {{ choice.participant }}</li>
+	{% for event, choice in team_choice_per_event %}
+		{% if choice %}
+			<li><a href="{{ event.get_absolute_url }}">{{ event }}</a>: {{ choice.participant.swimmer }} {{ choice.participant.swimmer.country }} (Confirmed: {{ choice.participant.status }}) </li>
+		{% else %}
+			<li><a href="{{ event.get_absolute_url }}">{{ event }}</a>: {{ choice }}</li>
+		{% endif %}
 	{% endfor %}
+	
 	{% if team.WR_event %}
 	<li>World Record Event 1: <a href="{{ team.WR_event.get_absolute_url }}">{{ team.WR_event }}</a></li>
+	{% else %}
+	<li>World Record Event 1: {{ team.WR_event }}</li>
 	{% endif %}
 	{% if team.WR_event2 %}
 	<li>World Record Event 2: <a href="{{ team.WR_event2.get_absolute_url }}">{{ team.WR_event2 }}</a></li>
+	{% else %}
+	<li>World Record Event 2: {{ team.WR_event2 }}</li>
 	{% endif %}
 	{% if team.WR_event3 %}
 	<li>World Record Event 3: <a href="{{ team.WR_event3.get_absolute_url }}">{{ team.WR_event3 }}</a></li>
+	{% else %}
+	<li>World Record Event 3: {{ team.WR_event3 }}</li>
 	{% endif %}
 	</ul>
 
