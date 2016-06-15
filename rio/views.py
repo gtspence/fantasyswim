@@ -2,7 +2,7 @@ from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.template import loader, RequestContext
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import authenticate, login
-from .forms import UserCreateForm, TeamEditForm, ChoiceEditForm
+from .forms import UserCreateForm, TeamEditForm, TeamEditFormWR, ChoiceEditForm
 from django.contrib.auth.decorators import login_required
 from .models import Team, Event, Swimmer, Participant, Choice
 from django.views import generic
@@ -78,6 +78,7 @@ def team_edit(request, id=None):
 	event_list = Event.objects.all()
 
 	edit_form = TeamEditForm(request.POST or None, instance=team)
+	edit_formWR = TeamEditFormWR(request.POST or None, instance=team)
 	
 	choice_form_list = []
 	for idx, event in enumerate(event_list):
@@ -88,10 +89,11 @@ def team_edit(request, id=None):
 			choice_form_list.append(ChoiceEditForm(event, request.POST or None, prefix=str(idx)))	
 
 	if request.method == "POST":
-		if edit_form.is_valid(): # and all([choice_form.is_valid() for choice_form in choice_form_list]):
+		if edit_form.is_valid() and edit_formWR.is_valid():
 			edit_form.save()
+			edit_formWR.save()
 			for choice_form in choice_form_list:
-				if choice_form.is_valid(): # and delete above if you want optional
+				if choice_form.is_valid():
 					choice = choice_form.save(commit=False)
 					choice.team = team
 					choice.event = choice_form.event
@@ -100,6 +102,7 @@ def team_edit(request, id=None):
 		
 	return render(request, 'rio/team_edit.html', 
 					{'edit_form': edit_form, 
+					'edit_formWR': edit_formWR, 
 					'choice_form_list': choice_form_list,
 					'event_list': event_list,
 					'title': 'Create/edit team'},

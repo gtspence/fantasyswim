@@ -2,9 +2,28 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 
+class Event(models.Model):
+	name = models.CharField(max_length=50)
+	date = models.DateField("Date of Final", null=True, blank=True)
+	relay = models.BooleanField(default=False)
+	wr = models.BooleanField(default=False)
+	def __str__(self):
+		return self.name
+	def get_absolute_url(self):
+		return reverse('event', args=(self.id,))
+
 class Team(models.Model):
 	user = models.OneToOneField(User)
 	name = models.CharField("Team Name", max_length=200)
+	WR_event = models.ForeignKey(Event, limit_choices_to={'relay': False}, 
+								blank=True, null=True, 
+								related_name="WR_event", verbose_name=u'WR event 1')
+	WR_event2 = models.ForeignKey(Event, limit_choices_to={'relay': False}, 
+								blank=True, null=True, 
+								related_name="WR_event2", verbose_name=u'WR event 2')
+	WR_event3 = models.ForeignKey(Event, limit_choices_to={'relay': False}, 
+								blank=True, null=True, 
+								related_name="WR_event3", verbose_name=u'WR event 3')
 	def __str__(self):
 		return self.name
 	def get_absolute_url(self):
@@ -17,16 +36,6 @@ class Team(models.Model):
 		team_choices = self.choice_set.all()
 		team_points = [ch.participant.points for ch in team_choices]
 		return sum([x==5 for x in team_points])
-
-
-class Event(models.Model):
-	name = models.CharField(max_length=50)
-	date = models.DateField("Date of Final", null=True, blank=True)
-	relay = models.BooleanField(default=False)
-	def __str__(self):
-		return self.name
-	def get_absolute_url(self):
-		return reverse('event', args=(self.id,))
 	
 class Swimmer(models.Model):
 	name = models.CharField(max_length=200)

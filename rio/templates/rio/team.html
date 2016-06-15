@@ -13,6 +13,15 @@
 	{% for choice in team.choice_set.all %}
 	<li><a href="{{ choice.event.get_absolute_url }}">{{ choice.event }}</a>: {{ choice.participant }}</li>
 	{% endfor %}
+	{% if team.WR_event %}
+	<li>World Record Event 1: <a href="{{ team.WR_event.get_absolute_url }}">{{ team.WR_event }}</a></li>
+	{% endif %}
+	{% if team.WR_event2 %}
+	<li>World Record Event 2: <a href="{{ team.WR_event2.get_absolute_url }}">{{ team.WR_event2 }}</a></li>
+	{% endif %}
+	{% if team.WR_event3 %}
+	<li>World Record Event 3: <a href="{{ team.WR_event3.get_absolute_url }}">{{ team.WR_event3 }}</a></li>
+	{% endif %}
 	</ul>
 
 {% endblock %}
