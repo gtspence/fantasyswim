@@ -28,14 +28,20 @@ class Team(models.Model):
 		return self.name
 	def get_absolute_url(self):
 		return reverse('team', args=(self.id,))
-# 	def points(self):
-# 		team_choices = self.choice_set.all()
-# 		team_points = [ch.participant.points for ch in team_choices]
-# 		return sum(filter(None, team_points))
+	def points(self):
+		team_points = [team_choice.points() for team_choice in self.choice_set.all()]
+		if self.WR_event:
+			team_points.append(5*self.WR_event.wr)
+		if self.WR_event2:
+			team_points.append(5*self.WR_event2.wr)
+		if self.WR_event3:
+			team_points.append(5*self.WR_event3.wr)
+		return sum(p for p in team_points if p is not None)
 	def correct_golds(self):
-		team_choices = self.choice_set.all()
-		team_points = [ch.participant.points for ch in team_choices]
-		return sum([x==5 for x in team_points])
+		team_points_choices_only = [team_choice.points() for team_choice in self.choice_set.all()]
+		return sum([x==5 for x in team_points_choices_only])
+
+
 	
 class Swimmer(models.Model):
 	name = models.CharField(max_length=200)
@@ -70,8 +76,11 @@ class Choice(models.Model):
 	team = models.ForeignKey(Team)
 	event = models.ForeignKey(Event)
 	participant = models.ForeignKey(Participant, blank=True, null=True)
-# 	def points(self):
-# 		return self.participant.points
+ 	def points(self):
+ 		if self.participant:
+ 			return self.participant.points
+ 		else:
+ 			return None
  	def __str__(self):
  		return '%s: %s' % (self.team, self.event)
 	class Meta:
