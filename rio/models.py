@@ -28,10 +28,10 @@ class Team(models.Model):
 		return self.name
 	def get_absolute_url(self):
 		return reverse('team', args=(self.id,))
-	def points(self):
-		team_choices = self.choice_set.all()
-		team_points = [ch.participant.points for ch in team_choices]
-		return sum(filter(None, team_points))
+# 	def points(self):
+# 		team_choices = self.choice_set.all()
+# 		team_points = [ch.participant.points for ch in team_choices]
+# 		return sum(filter(None, team_points))
 	def correct_golds(self):
 		team_choices = self.choice_set.all()
 		team_points = [ch.participant.points for ch in team_choices]
@@ -69,10 +69,10 @@ class Participant(models.Model):
 class Choice(models.Model):
 	team = models.ForeignKey(Team)
 	event = models.ForeignKey(Event)
-	participant = models.ForeignKey(Participant)
-	def points(self):
-		return self.participant.points
-	def __str__(self):
-		return '%s: %s' % (self.event.name, self.participant.swimmer.name)
+	participant = models.ForeignKey(Participant, blank=True, null=True)
+# 	def points(self):
+# 		return self.participant.points
+ 	def __str__(self):
+ 		return '%s: %s' % (self.team, self.event)
 	class Meta:
 		unique_together = ('team', 'event')

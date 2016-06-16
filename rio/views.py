@@ -10,6 +10,12 @@ from django.utils.decorators import method_decorator
 from django.core.urlresolvers import reverse
 #from django.db.models import Count
 
+def team_complete(team):
+	team_choices = Choice.objects.filter(team=team)
+	choices_or_wr_events_none = [choice.participant == None for choice in team_choices] + [
+								team.WR_event == None, team.WR_event2 == None, team.WR_event3 == None]
+	return not any(choices_or_wr_events_none)
+
 class IndexView(generic.ListView):
 	template_name = 'rio/index.html'
 	context_object_name = 'team_list'
@@ -36,14 +42,8 @@ class TeamView(generic.DetailView):
 				
 	def get_context_data(self, **kwargs):
 		context = super(TeamView, self).get_context_data(**kwargs)
-		event_list = Event.objects.all()
-		team_choice_all_events = []
-		for event in event_list:
-			try:
-				team_choice_all_events.append(Choice.objects.get(event=event, team=context['team']))
-			except Choice.DoesNotExist:
-				team_choice_all_events.append(None)
-		context['team_choice_per_event'] = zip(event_list, team_choice_all_events)
+		context['team_choices'] = Choice.objects.filter(team=context['team'])
+		context['team_not_complete'] = not team_complete(context['team'])
 		return context
 		
 
@@ -94,28 +94,26 @@ def team_edit(request, id=None):
 	
 	choice_form_list = []
 	for idx, event in enumerate(event_list):
-		if Choice.objects.filter(event=event, team=team).exists():
+		if id:
 			choice_form_list.append(ChoiceEditForm(event, request.POST or None, 
 									instance=Choice.objects.get(event=event, team=team), prefix=str(idx)))
 		else:
-			choice_form_list.append(ChoiceEditForm(event, request.POST or None, prefix=str(idx)))	
+			choice_form_list.append(ChoiceEditForm(event, request.POST or None, prefix=str(idx)))
 
 	if request.method == "POST":
-		if edit_form.is_valid() and edit_formWR.is_valid():
+		if edit_form.is_valid() and edit_formWR.is_valid() and all([choice_form.is_valid() for choice_form in choice_form_list]):
 			edit_form.save()
 			edit_formWR.save()
 			for choice_form in choice_form_list:
-				if choice_form.is_valid():
-					choice = choice_form.save(commit=False)
-					choice.team = team
-					choice.event = choice_form.event
-					choice.save()
+				choice = choice_form.save(commit=False)
+				choice.team = team
+				choice.event = choice_form.event
+				choice.save()
 			return HttpResponseRedirect(team.get_absolute_url())
 		
 	return render(request, 'rio/team_edit.html', 
 					{'edit_form': edit_form, 
 					'edit_formWR': edit_formWR, 
 					'choice_form_list': choice_form_list,
-					'event_list': event_list,
 					'title': 'Create/edit team'},
 					context_instance=RequestContext(request))

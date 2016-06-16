@@ -48,7 +48,6 @@ class ChoiceEditForm(forms.ModelForm):
 	def __init__(self, event, *args, **kwargs):
 		super (ChoiceEditForm, self ).__init__(*args, **kwargs)
 		self.fields['participant'].queryset = Participant.objects.filter(event=event)
-# 		self.fields['participant'].required = False
 		self.event = event
 	class Meta:
 		model = Choice
