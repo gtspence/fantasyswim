@@ -23,9 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG')
-
-ALLOWED_HOSTS = []
+DEBUG = False
 
 
 # Application definition
@@ -168,3 +166,9 @@ ADMINS = [('Graeme', 'fantasyswimming@gmail.com'),]
 ALLOWED_HOSTS = ['*']
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
+
+# try to load local_settings.py if it exists
+try:
+	from local_settings import *
+except Exception as e:
+	pass
