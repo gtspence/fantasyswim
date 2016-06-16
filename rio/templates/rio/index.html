@@ -24,7 +24,7 @@
 {% if team_list %}
 	<ul>
 	{% for team in team_list %}
-		<li><a href="{{ team.get_absolute_url }}">{{ team.name }}</a> | {{ team.user }}</li>
+		<li><a href="{{ team.get_absolute_url }}">{{ team.name }}</a> | {{ team.user }} | Complete: {{ team.complete }}</li>
 	{% endfor %}
 	</ul>
 {% else %}

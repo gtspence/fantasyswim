@@ -10,12 +10,6 @@ from django.utils.decorators import method_decorator
 from django.core.urlresolvers import reverse
 #from django.db.models import Count
 
-def team_complete(team):
-	team_choices = Choice.objects.filter(team=team)
-	choices_or_wr_events_none = [choice.participant == None for choice in team_choices] + [
-								team.WR_event == None, team.WR_event2 == None, team.WR_event3 == None]
-	return not any(choices_or_wr_events_none)
-
 class IndexView(generic.ListView):
 	template_name = 'rio/index.html'
 	context_object_name = 'team_list'
@@ -43,7 +37,6 @@ class TeamView(generic.DetailView):
 	def get_context_data(self, **kwargs):
 		context = super(TeamView, self).get_context_data(**kwargs)
 		context['team_choices'] = Choice.objects.filter(team=context['team'])
-		context['team_not_complete'] = not team_complete(context['team'])
 		return context
 		
 

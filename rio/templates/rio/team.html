@@ -5,7 +5,7 @@
 
     {% if user == team.user %}
     
-    {% if team_not_complete %}
+    {% if not team.complete %}
     Complete your team!
     {% endif %}
     <a href="{% url 'team_edit' team.id %}"">Edit your team</a>

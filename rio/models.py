@@ -40,6 +40,11 @@ class Team(models.Model):
 	def correct_golds(self):
 		team_points_choices_only = [team_choice.points() for team_choice in self.choice_set.all()]
 		return sum([x==5 for x in team_points_choices_only])
+	def complete(self):
+		team_choices = Choice.objects.filter(team=self)
+		choices_or_wr_events_none = [choice.participant == None for choice in team_choices] + [
+									self.WR_event == None, self.WR_event2 == None, self.WR_event3 == None]
+		return not any(choices_or_wr_events_none)
 
 
 	
