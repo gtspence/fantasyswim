@@ -32,16 +32,13 @@ class TeamEditFormWR(forms.ModelForm):
 		model = Team
 		fields = ('WR_event', 'WR_event2', 'WR_event3')	
 	def clean(self):
-		#run the standard clean method first
 		cleaned_data=super(TeamEditFormWR, self).clean()
 		wr1 = cleaned_data.get("WR_event")
 		wr2 = cleaned_data.get("WR_event2")
 		wr3 = cleaned_data.get("WR_event3")
 		wrs = filter(None, [wr1, wr2, wr3])
-		#check if passwords are entered and match
 		if len(wrs) > len(set(wrs)):
 			raise forms.ValidationError("Select different events!")
-		#always return the cleaned data
 		return cleaned_data
 	
 class ChoiceEditForm(forms.ModelForm):
@@ -52,3 +49,10 @@ class ChoiceEditForm(forms.ModelForm):
 	class Meta:
 		model = Choice
 		fields = ['participant']
+	def clean(self):
+		cleaned_data=super(ChoiceEditForm, self).clean()
+		participant = cleaned_data.get('participant')
+		if participant:
+			if participant not in Participant.objects.filter(event=self.event):
+				raise forms.ValidationError("Choice must be from this event!")
+		return cleaned_data

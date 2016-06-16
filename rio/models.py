@@ -11,6 +11,8 @@ class Event(models.Model):
 		return self.name
 	def get_absolute_url(self):
 		return reverse('event', args=(self.id,))
+	class Meta:
+		ordering = ['id']
 
 class Team(models.Model):
 	user = models.OneToOneField(User)
