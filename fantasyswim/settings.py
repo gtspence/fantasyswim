@@ -165,8 +165,9 @@ ADMINS = [('Graeme', 'fantasyswimming@gmail.com'),]
 
 # Allow all host headers
 ALLOWED_HOSTS = ['*']
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
+
+# CSRF_COOKIE_SECURE = True
+# SESSION_COOKIE_SECURE = True
 
 # try to load local_settings.py if it exists
 try:

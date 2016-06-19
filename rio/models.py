@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.db.models import Sum
+
 
 class Event(models.Model):
 	name = models.CharField(max_length=50)
@@ -31,22 +33,17 @@ class Team(models.Model):
 	def get_absolute_url(self):
 		return reverse('team', args=(self.id,))
 	def points(self):
-		team_points = [team_choice.points() for team_choice in self.choice_set.all()]
-		if self.WR_event:
-			team_points.append(5*self.WR_event.wr)
-		if self.WR_event2:
-			team_points.append(5*self.WR_event2.wr)
-		if self.WR_event3:
-			team_points.append(5*self.WR_event3.wr)
+		team_points = [Participant.objects.filter(choice__team=self).aggregate(Sum('points'))['points__sum']]
+		for nomination in [self.WR_event, self.WR_event2, self.WR_event3]:
+			if nomination:
+				team_points.append(5*nomination.wr)
 		return sum(p for p in team_points if p is not None)
 	def correct_golds(self):
-		team_points_choices_only = [team_choice.points() for team_choice in self.choice_set.all()]
-		return sum([x==5 for x in team_points_choices_only])
+		return Participant.objects.filter(choice__team=self, points=5).count()
 	def complete(self):
-		team_choices = Choice.objects.filter(team=self)
-		choices_or_wr_events_none = [choice.participant == None for choice in team_choices] + [
-									self.WR_event == None, self.WR_event2 == None, self.WR_event3 == None]
-		return not any(choices_or_wr_events_none)
+		choices_or_wr_events_none = [Choice.objects.filter(team=self, participant=None).count() == 0,
+									self.WR_event != None, self.WR_event2 != None, self.WR_event3 != None]
+		return all(choices_or_wr_events_none)
 
 
 	
