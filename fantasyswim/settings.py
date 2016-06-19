@@ -124,14 +124,12 @@ USE_TZ = True
 LOGIN_URL = '/rio/login/'
 LOGIN_REDIRECT_URL = '/rio/'
 
-# Email settings
-EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
+# SendGrid email settings
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = 'sendgrid_username'
+EMAIL_HOST_PASSWORD = 'sendgrid_password'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'fantasyswimming@gmail.com'
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-SERVER_EMAIL = EMAIL_HOST_USER
+EMAIL_USE_TLS = True
 
 
 #Update database configuration with $DATABASE_URL.
