@@ -11,11 +11,11 @@
         
         {% if user.is_authenticated %}
 			<h2>Hello {{ user.username }}!</h2>
-			<a href="{% url 'logout' %}?next=/rio/"">Logout</a> |
+			<a href="{% url 'logout' %}?next=/rio/">Logout</a> |
 			<a href="{% url 'password_change' %}">Change password</a>
 			<br />
-			{% if user_team %}
-			<a href="{{ user_team.get_absolute_url }}">My team</a>
+			{% if user.team %}
+			<a href="{{ user.team.get_absolute_url }}">My team</a>
 			{% elif entries_open %}
 			<a href="{% url 'team_new' %}">Create team</a>
 			{% endif %}

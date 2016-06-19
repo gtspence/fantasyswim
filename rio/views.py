@@ -22,11 +22,6 @@ class IndexView(generic.ListView):
 		context = super(IndexView, self).get_context_data(*args, **kwargs)
 		context['event_list'] = Event.objects.all()
 		context['entries_open'] = settings.ENTRIES_OPEN
-		if self.request.user.is_authenticated():
-			try:
-				context['user_team'] = Team.objects.get(user=self.request.user)
-			except Team.DoesNotExist:
-				context['user_team'] = None
 		return context
 
 

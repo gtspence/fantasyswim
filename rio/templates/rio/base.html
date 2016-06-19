@@ -7,6 +7,16 @@
     <title>Fantasy Swimming</title>
     {% endif %}
   </head>
+  <div>Fantasy Swimming:
+        <a href="{% url 'index' %}">Home</a>
+        {% if user.is_authenticated %}
+        	{% if user.team.name  %}
+        	| <a href="{{ user.team.get_absolute_url }}">My team</a>
+        	{% endif %}
+        | <a href="{% url 'logout' %}?next=/rio/">Logout</a>
+        {% endif %}
+    </div>
+	<hr>
   <body>
     {% block content %}{% endblock %}
   </body>
