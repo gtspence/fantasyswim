@@ -169,6 +169,11 @@ ALLOWED_HOSTS = ['*']
 # CSRF_COOKIE_SECURE = True
 # SESSION_COOKIE_SECURE = True
 
+
+# Entries open variable
+ENTRIES_OPEN = os.environ.get('ENTRIES_OPEN')=='True'
+
+
 # try to load local_settings.py if it exists
 try:
 	from local_settings import *

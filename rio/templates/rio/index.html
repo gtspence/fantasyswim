@@ -3,6 +3,12 @@
 {% block content %}
         <h1>Welcome to Fantasy Swimming</h1>
         
+        {% if entries_open %}
+        <h2>Entries are open</h2>
+        {% else %}
+        <h2>Entries are now closed</h2>
+        {% endif %}
+        
         {% if user.is_authenticated %}
 			<h2>Hello {{ user.username }}!</h2>
 			<a href="{% url 'logout' %}?next=/rio/"">Logout</a> |
@@ -10,13 +16,16 @@
 			<br />
 			{% if user_team %}
 			<a href="{{ user_team.get_absolute_url }}">My team</a>
-			{% else %}
+			{% elif entries_open %}
 			<a href="{% url 'team_new' %}">Create team</a>
 			{% endif %}
-		{% else %}
+		{% elif entries_open %}
 			<h2>Login or Register!</h2>
 			<a href="{% url 'login' %}">Login</a> |
 	        <a href="{% url 'register' %}">Register</a>
+	    {% else %}
+	    	<h2>Login!</h2>
+			<a href="{% url 'login' %}">Login</a>
 		{% endif %}
 
 <h2>Teams</h2>

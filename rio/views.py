@@ -8,7 +8,7 @@ from .models import Team, Event, Swimmer, Participant, Choice
 from django.views import generic
 from django.utils.decorators import method_decorator
 from django.core.urlresolvers import reverse
-#from django.db.models import Count
+from django.conf import settings
 
 class IndexView(generic.ListView):
 	template_name = 'rio/index.html'
@@ -21,6 +21,7 @@ class IndexView(generic.ListView):
 	def get_context_data(self, *args, **kwargs):
 		context = super(IndexView, self).get_context_data(*args, **kwargs)
 		context['event_list'] = Event.objects.all()
+		context['entries_open'] = settings.ENTRIES_OPEN
 		if self.request.user.is_authenticated():
 			try:
 				context['user_team'] = Team.objects.get(user=self.request.user)
@@ -37,6 +38,7 @@ class TeamView(generic.DetailView):
 	def get_context_data(self, **kwargs):
 		context = super(TeamView, self).get_context_data(**kwargs)
 		context['team_choices'] = Choice.objects.filter(team=context['team'])
+		context['entries_open'] = settings.ENTRIES_OPEN
 		return context
 		
 
@@ -45,14 +47,14 @@ class EventView(generic.DetailView):
 	model = Event
 	template_name = 'rio/event.html'
 	
-# 	def get_context_data(self, *args, **kwargs):
-# 		context = super(EventView, self).get_context_data(*args, **kwargs)
-# 		context['common_choice'] = Participant.objects.filter(event=self.event).annotate(c=Count('choice')).order_by('-c')[0] 
-# 		return context
-## Doesn't work with self.event.... https://docs.djangoproject.com/en/1.9/topics/class-based-views/generic-display/#dynamic-filtering
-## What about ties? https://docs.djangoproject.com/en/1.9/topics/db/aggregation/
+	def get_context_data(self, *args, **kwargs):
+		context = super(EventView, self).get_context_data(*args, **kwargs)
+		context['entries_open'] = settings.ENTRIES_OPEN
+		return context
 
 def register(request):
+	if not settings.ENTRIES_OPEN:
+		return HttpResponseRedirect('/rio/')
 	context = RequestContext(request)
 	if request.method == 'POST':
 		user_form = UserCreateForm(request.POST)
@@ -71,6 +73,7 @@ def register(request):
 
 @login_required
 def team_edit(request, id=None):
+
 	if id:
 		team = get_object_or_404(Team, pk=id)
 		if team.user != request.user:
@@ -80,6 +83,9 @@ def team_edit(request, id=None):
 			return HttpResponseRedirect(request.user.team.get_absolute_url())
 		team = Team(user=request.user)
 	
+	if not settings.ENTRIES_OPEN:
+		return HttpResponseRedirect(team.get_absolute_url())
+		
 	event_list = Event.objects.all()
 
 	edit_form = TeamEditForm(request.POST or None, instance=team)

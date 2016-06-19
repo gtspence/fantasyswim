@@ -4,22 +4,24 @@
         <h1>Event: {{ event.name }}</h1>
 
 
-		<h2>Choices:</h2>
-	<ul>
-<!-- 	<li>Most common choice: {{ common_choice }}</li> -->
-	{% for choice in event.choice_set.all %}
-	{% if choice.participant %}
-	<li><a href="{{ choice.team.get_absolute_url }}">{{ choice.team.name }}</a> | {{ choice.team.user }}: {{ choice.participant.swimmer }} {{ choice.participant.swimmer.country }}</li>
-	{% endif %}
-	{% endfor %}
-	</ul>
-	
+<h2>Choices:</h2>
+{% if entries_open %}
+	<p>Everyone's choices will be shown when entries close!</p>
 	<h2>Potential participants:</h2>
 	<ul>
 	{% for participant in event.participant_set.all %}
 	<li> {{ participant }}</li>
 	{% endfor %}
 	</ul>
+{% else %}
+	<ul>
+	{% for choice in event.choice_set.all %}
+	{% if choice.participant %}
+	<li><a href="{{ choice.team.get_absolute_url }}">{{ choice.team.name }}</a> | {{ choice.team.user }}: {{ choice.participant.swimmer }} {{ choice.participant.swimmer.country }}</li>
+	{% endif %}
+	{% endfor %}
+	</ul>
+{% endif %}
 
 {% endblock %}
 

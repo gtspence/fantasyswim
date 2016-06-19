@@ -3,7 +3,7 @@
 {% block content %}
         <h1>Team: {{ team.name }}</h1>
 
-    {% if user == team.user %}
+    {% if user == team.user and entries_open %}
     
     {% if not team.complete %}
     Complete your team!
@@ -16,6 +16,8 @@
     
 	<h2>Choices:</h2>
 
+	
+{% if user == team.user or not entries_open %}
 	<ul>
 	{% for choice in team_choices %}
 		{% if choice.participant %}
@@ -43,5 +45,9 @@
 	<li>World Record Event 3: {{ team.WR_event3 }}</li>
 	{% endif %}
 	</ul>
+
+{% else %}
+	<p>Other people's choices will be shown when entries close!</p>
+{% endif %}
 
 {% endblock %}
