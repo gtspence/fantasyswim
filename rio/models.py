@@ -67,7 +67,7 @@ class Participant(models.Model):
 	event = models.ForeignKey(Event)
 	swimmer = models.ForeignKey(Swimmer)
 	time = models.IntegerField("Season Best", null=True, blank=True)
-	STATUS_CHOICES = (('Y', 'Yes'), ('N', 'No'),)
+	STATUS_CHOICES = (('Y', 'Confirmed'), ('N', 'Unconfirmed'), ('X', 'Not swimming'))
 	status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='N')
 	points = models.IntegerField(null=True, blank=True)
 	def __str__(self):
