@@ -9,6 +9,18 @@ from django.views import generic
 from django.utils.decorators import method_decorator
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from django.core.mail import send_mail
+
+def rules(request):
+	return render(request, 'rio/rules.html')
+
+class EventsView(generic.ListView):
+	template_name = 'rio/events.html'
+	context_object_name = 'event_list'
+	def get_queryset(self):
+		"""Return all the teams."""
+		return Event.objects.all()	
+
 
 class IndexView(generic.ListView):
 	template_name = 'rio/index.html'
@@ -20,7 +32,6 @@ class IndexView(generic.ListView):
 	
 	def get_context_data(self, *args, **kwargs):
 		context = super(IndexView, self).get_context_data(*args, **kwargs)
-		context['event_list'] = Event.objects.all()
 		context['entries_open'] = settings.ENTRIES_OPEN
 		return context
 
@@ -57,6 +68,10 @@ def register(request):
 			user = user_form.save()
 			user = authenticate(username=user_form.cleaned_data.get('username'), password=user_form.cleaned_data.get('password1'))
 			login(request, user)
+			send_mail('Welcome to Fantasy Swimming!', 
+					message='t', #Try welcome.html??
+					from_email='fantasyswimming@gmail.com', 
+					recipient_list=[user.email])
 			return HttpResponseRedirect('/rio/')
 	else:
 		user_form = UserCreateForm()

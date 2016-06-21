@@ -5,6 +5,8 @@ from . import views
 
 urlpatterns = [
     url(r'^$', views.IndexView.as_view(), name='index'),
+    url(r'^rules/$', views.rules, name='rules'),
+    url(r'^events/$', views.EventsView.as_view(), name='events'),
     url(r'^team(?P<pk>[0-9]+)/$', views.TeamView.as_view(), name='team'),
     url(r'^event(?P<pk>[0-9]+)/$', views.EventView.as_view(), name='event'),
     url(r'^register/$', views.register, name='register'),

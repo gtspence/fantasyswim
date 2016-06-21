@@ -1,7 +1,7 @@
 {% extends "rio/base.html" %}
 
 {% block content %}
-        <h1>Team: {{ team.name }}</h1>
+        <h2>{{ team.name }}</h2>
 
     {% if user == team.user and entries_open %}
     
@@ -14,18 +14,53 @@
     
     
     
-	<h2>Choices:</h2>
+	<h3>Choices:</h3>
 
 	
 {% if user == team.user or not entries_open %}
-	<ul>
+
+
+<table class="table table-hover">
+	<thead>
+		<tr>
+			<th>Event</th>
+			<th>Swimmer</th>
+			<th>Country</th>
+			<th>Confirmed</th>
+		</tr>
+	</thead>
+	<tbody>
+	
 	{% for choice in team_choices %}
 		{% if choice.participant %}
-			<li><a href="{{ choice.event.get_absolute_url }}">{{ choice.event }}</a>: {{ choice.participant.swimmer }} {{ choice.participant.swimmer.country }} (Confirmed: {{ choice.participant.status }}) </li>
+			<tr>
+				<td><a href="{{ choice.event.get_absolute_url }}">{{ choice.event }}</a></td>
+				<td>{{ choice.participant.swimmer }} </td>
+				<td>{{ choice.participant.swimmer.country }}</td> 
+				<td>
+					{% if choice.participant.status == "N" %}
+						<span class="label label-default">Unconfirmed</span>
+
+					{% else %}
+						<span class="label label-success">In</span>
+					{% endif %}
+				</td>
+			</tr>
 		{% else %}
-			<li><a href="{{ choice.event.get_absolute_url }}">{{ choice.event }}</a>: {{ choice.participant }}</li>
+			<tr>
+				<td><a href="{{ choice.event.get_absolute_url }}">{{ choice.event }}</td>
+				<td>{{ choice.participant }} </td>
+				<td></td> 
+				<td></td>
+			</tr>
 		{% endif %}
 	{% endfor %}
+
+	</tbody>
+</table>
+	
+	<ul>
+	
 	
 	<h2>Bonus:</h2>
 	
