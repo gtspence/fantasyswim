@@ -12,15 +12,23 @@ from django.conf import settings
 from django.core.mail import send_mail
 
 def rules(request):
-	return render(request, 'rio/rules.html')
+	return render(request, 'rio/rules.html', context={'title':'Rules'})
+
+def contact(request):
+	return render(request, 'rio/contact.html', context={'title':'Contact Us'})
+
 
 class EventsView(generic.ListView):
 	template_name = 'rio/events.html'
-	context_object_name = 'event_list'
+	context_object_name = 'w_event_list'
 	def get_queryset(self):
 		"""Return all the teams."""
-		return Event.objects.all().order_by('id')
-
+		return Event.objects.filter(name__startswith='W').order_by('id')
+	def get_context_data(self, *args, **kwargs):
+		context = super(EventsView, self).get_context_data(*args, **kwargs)
+		context['m_event_list'] = Event.objects.filter(name__startswith='M').order_by('id')
+		context['title'] = 'Events'
+		return context
 
 class IndexView(generic.ListView):
 	template_name = 'rio/index.html'
@@ -45,6 +53,7 @@ class TeamView(generic.DetailView):
 		context = super(TeamView, self).get_context_data(**kwargs)
 		context['team_choices'] = Choice.objects.filter(team=context['team']).order_by('event_id')
 		context['entries_open'] = settings.ENTRIES_OPEN
+		context['title'] = context['team'].name
 		return context
 		
 
@@ -56,6 +65,7 @@ class EventView(generic.DetailView):
 	def get_context_data(self, *args, **kwargs):
 		context = super(EventView, self).get_context_data(*args, **kwargs)
 		context['entries_open'] = settings.ENTRIES_OPEN
+		context['title'] = context['event'].name
 		return context
 
 def register(request):
@@ -86,12 +96,14 @@ def team_edit(request, id=None):
 
 	if id:
 		team = get_object_or_404(Team, pk=id)
+		title = 'Edit team'
 		if team.user != request.user:
 			return HttpResponseForbidden()
 	else:
 		if Team.objects.filter(user=request.user).exists():
 			return HttpResponseRedirect(request.user.team.get_absolute_url())
 		team = Team(user=request.user)
+		title = 'Create team'
 	
 	if not settings.ENTRIES_OPEN:
 		return HttpResponseRedirect(team.get_absolute_url())
@@ -124,5 +136,5 @@ def team_edit(request, id=None):
 					{'edit_form': edit_form, 
 					'edit_formWR': edit_formWR, 
 					'choice_form_list': choice_form_list,
-					'title': 'Create/edit team'},
+					'title': title},
 					context_instance=RequestContext(request))

@@ -1,26 +1,31 @@
 {% extends "rio/base.html" %}
 
 {% block content %}
-        <h1>Create/Edit Team</h1>
+<h2>{{ title }}</h2>
 
-        FantasySwimming says: <strong>Create/edit your team!</strong><br />
-
-        <form method="post" action="."
+<form method="post" action="."
                 enctype="multipart/form-data">
 
-            {% csrf_token %}
+	{% csrf_token %}
 
-            {{ edit_form.as_p }}
+	{{ edit_form.as_p }}
 
-			{% for choice_form in choice_form_list %}
-				<strong>{{ choice_form.event.name }}</strong>
-				{{ choice_form.as_p }}
-			{% endfor %}
+<h3>Choices</h3>
+<li>Times are season bests (2015-2016 for relays)</li>
+<li>Swimmers will be confirmed when the official entry list is released</li><br>
+
+	{% for choice_form in choice_form_list %}
+		<strong>{{ choice_form.event.name }}</strong>
+		{{ choice_form.as_p }}
+	{% endfor %}
 			
-			<strong>Bonus: World Record Events</strong>
-			{{ edit_formWR.as_p }}
+<h3>World Records</h3>
+<li>Nominate 3 non-relay events</li><br>
+
+	{{ edit_formWR.as_p }}
            
-            <!-- Provide a button to click to submit the form. -->
-            <input class="btn btn-default" type="submit" name="submit" value="Save" />
-        </form>
+<input class="btn btn-default" type="submit" name="submit" value="Save" />
+</form>
 {% endblock %}
+
+

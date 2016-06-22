@@ -4,10 +4,25 @@
 
 <h2>Events</h2>
 
-<ul>
-{% for event in event_list %}
-	<li><a href="{{ event.get_absolute_url }}">{{ event.name }}</a></li>
-{% endfor %}
-</ul>
+<br>
+
+<div class="row">
+	<div class="col-md-5">
+  		<ul class="list-group">
+			{% for event in w_event_list %}
+				<li class="list-group-item"><a href="{{ event.get_absolute_url }}">{{ event.name }}</a></li>
+			{% endfor %}
+		</ul>
+	</div>
+  	<div class="col-md-5">
+  		<ul class="list-group">
+			{% for event in m_event_list %}
+				<li class="list-group-item"><a href="{{ event.get_absolute_url }}">{{ event.name }}</a></li>
+			{% endfor %}
+		</ul>
+	</div>
+</div>
+
+
 
 {% endblock %}

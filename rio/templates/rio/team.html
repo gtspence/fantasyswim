@@ -18,66 +18,85 @@
 
 	
 {% if user == team.user or not entries_open %}
-
-
-<table class="table table-hover">
-	<thead>
-		<tr>
-			<th>Event</th>
-			<th>Swimmer</th>
-			<th>Country</th>
-			<th>Status</th>
-		</tr>
-	</thead>
-	<tbody>
+	<div class="row">
+		<div class="col-md-9">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th>Event</th>
+						<th>Swimmer</th>
+						<th>Country</th>
+						<th>Status</th>
+					</tr>
+				</thead>
+				<tbody>
 	
-	{% for choice in team_choices %}
-		{% if choice.participant %}
-			<tr>
-				<td><a href="{{ choice.event.get_absolute_url }}">{{ choice.event }}</a></td>
-				<td>{{ choice.participant.swimmer }} </td>
-				<td>{{ choice.participant.swimmer.country }}</td> 
-				<td>
-					{% if choice.participant.status == "Unconfirmed" %}
-						<span class="label label-default">Unconfirmed</span>
-					{% elif choice.participant.status == "Confirmed" %}
-						<span class="label label-success">Confirmed</span>
-					{% elif choice.participant.status == "Not swimming" %}
-						<span class="label label-danger">Not Swimming</span>
+				{% for choice in team_choices %}
+					{% if choice.participant %}
+						<tr>
+							<td><a href="{{ choice.event.get_absolute_url }}">{{ choice.event }}</a></td>
+							<td>{{ choice.participant.swimmer }} </td>
+							<td>{{ choice.participant.swimmer.country }}</td> 
+							<td>
+								{% if choice.participant.status == "Unconfirmed" %}
+									<span class="label label-default">Unconfirmed</span>
+								{% elif choice.participant.status == "Confirmed" %}
+									<span class="label label-success">Confirmed</span>
+								{% elif choice.participant.status == "Not swimming" %}
+									<span class="label label-danger">Not Swimming</span>
+								{% endif %}
+							</td>
+						</tr>
+					{% else %}
+						<tr>
+							<td><a href="{{ choice.event.get_absolute_url }}">{{ choice.event }}</td>
+							<td>{{ choice.participant }} </td>
+							<td>-</td> 
+							<td>-</td>
+						</tr>
 					{% endif %}
-				</td>
-			</tr>
-		{% else %}
-			<tr>
-				<td><a href="{{ choice.event.get_absolute_url }}">{{ choice.event }}</td>
-				<td>{{ choice.participant }} </td>
-				<td>-</td> 
-				<td>-</td>
-			</tr>
-		{% endif %}
-	{% endfor %}
+				{% endfor %}
 
-	</tbody>
-</table>
+				</tbody>
+			</table>
+		</div>
+	</div>
 		
-<h3>Bonus:</h3>
-<ul class="list-group" >	
-	{% if team.WR_event %}
-	<li class="list-group-item">World Record Event 1: <a href="{{ team.WR_event.get_absolute_url }}">{{ team.WR_event }}</a></li>
-	{% else %}
-	<li class="list-group-item">World Record Event 1: {{ team.WR_event }}</li>
-	{% endif %}
-	{% if team.WR_event2 %}
-	<li class="list-group-item">World Record Event 2: <a href="{{ team.WR_event2.get_absolute_url }}">{{ team.WR_event2 }}</a></li>
-	{% else %}
-	<li class="list-group-item">World Record Event 2: {{ team.WR_event2 }}</li>
-	{% endif %}
-	{% if team.WR_event3 %}
-	<li class="list-group-item">World Record Event 3: <a href="{{ team.WR_event3.get_absolute_url }}">{{ team.WR_event3 }}</a></li>
-	{% else %}
-	<li class="list-group-item">World Record Event 3: {{ team.WR_event3 }}</li>
-	{% endif %}
-</ul>
+<h3>World Records:</h3>
+<div class="row">
+	<div class="col-md-5">
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th>Event</th>		
+				</tr>
+			</thead>
+			<tbody>
+				<tr>	
+					{% if team.WR_event %}
+						<td><a href="{{ team.WR_event.get_absolute_url }}">{{ team.WR_event }}</a></td>
+					{% else %}
+						<td>{{ team.WR_event }}</td>
+					{% endif %}
+				</tr>
+				<tr>
+					{% if team.WR_event2 %}
+						<td><a href="{{ team.WR_event2.get_absolute_url }}">{{ team.WR_event2 }}</a></td>
+					{% else %}
+						<td>{{ team.WR_event2 }}</td>
+					{% endif %}
+				</tr>
+				<tr>
+					{% if team.WR_event3 %}
+						<td><a href="{{ team.WR_event3.get_absolute_url }}">{{ team.WR_event3 }}</a></td>
+					{% else %}
+						<td>{{ team.WR_event3 }}</td>
+					{% endif %}
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
 
 {% else %}
 	<p>Other people's choices will be shown when entries close!</p>

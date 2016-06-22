@@ -72,6 +72,8 @@ class Participant(models.Model):
 	points = models.IntegerField(null=True, blank=True)
 	def __str__(self):
 		return '%s %s %s (%s)' % (self.swimmer.name, self.swimmer.country, time_converter(self.time), self.status)
+	def display_time(self):
+		return time_converter(self.time)
 	class Meta:
 		unique_together = ('event', 'swimmer')
 		ordering = ['time']
