@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'crispy_forms',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -170,6 +171,9 @@ ALLOWED_HOSTS = ['*']
 
 # Entries open variable
 ENTRIES_OPEN = os.environ.get('ENTRIES_OPEN')=='True'
+
+# Crispy forms
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 
 # try to load local_settings.py if it exists
