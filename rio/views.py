@@ -2,7 +2,7 @@ from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.template import loader, RequestContext
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import authenticate, login
-from .forms import UserCreateForm, TeamEditForm, TeamEditFormWR, ChoiceEditForm
+from .forms import UserCreateForm, TeamEditForm, TeamEditFormWR, ChoiceEditForm, ContactForm
 from django.contrib.auth.decorators import login_required
 from .models import Team, Event, Swimmer, Participant, Choice
 from django.views import generic
@@ -10,12 +10,32 @@ from django.utils.decorators import method_decorator
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.core.mail import send_mail
+from django.contrib import messages
 
 def rules(request):
 	return render(request, 'rio/rules.html', context={'title':'Rules'})
 
+@login_required
 def contact(request):
-	return render(request, 'rio/contact.html', context={'title':'Contact Us'})
+	form_class = ContactForm
+	context = RequestContext(request)
+	
+	if request.method == 'POST':
+		form = form_class(request.POST)
+		if form.is_valid():
+			form_message = request.POST.get('message', '')
+			send_mail('Fantasy Swimming - Message from: ' + str(request.user), 
+					message=form_message,
+					from_email=request.user.email, 
+					recipient_list=['fantasyswimming@gmail.com'])
+			send_mail('Fantasy Swimming - Your Sent Message', 
+					message=form_message,
+					from_email='fantasyswimming@gmail.com', 
+					recipient_list=[request.user.email])
+			messages.info(request, 'Message sent to Fantasy Swimming Admin.')
+			return HttpResponseRedirect('/rio/')
+	
+	return render(request, 'rio/contact.html', {'form': form_class, 'title':'Contact Us'}, context)
 
 
 class EventsView(generic.ListView):
@@ -79,9 +99,10 @@ def register(request):
 			user = authenticate(username=user_form.cleaned_data.get('username'), password=user_form.cleaned_data.get('password1'))
 			login(request, user)
 			send_mail('Welcome to Fantasy Swimming!', 
-					message='t', #Try welcome.html??
+					message='Welcome to Fantasy Swimming', #Try welcome.html??
 					from_email='fantasyswimming@gmail.com', 
 					recipient_list=[user.email])
+			messages.info(request, 'Thanks for registering. Now create a team!')
 			return HttpResponseRedirect('/rio/')
 	else:
 		user_form = UserCreateForm()
@@ -130,7 +151,10 @@ def team_edit(request, id=None):
 				choice.team = team
 				choice.event = choice_form.event
 				choice.save()
+			messages.info(request, 'Team changes saved')
 			return HttpResponseRedirect(team.get_absolute_url())
+		else:
+			messages.error(request, "There's a problem with your team selection - please correct below")
 		
 	return render(request, 'rio/team_edit.html', 
 					{'edit_form': edit_form, 

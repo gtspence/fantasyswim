@@ -45,7 +45,7 @@
           <ul class="nav navbar-nav navbar-right">
         	{% if user.is_authenticated %}
         		<li><p class="navbar-text"><strong>{{ user }}</strong></p></li>
-        		{% if user.team  %}
+        		{% if user.team.name %}
         			<li><a href="{{ user.team.get_absolute_url }}">My Team</a></li>
         		{% else %}
         			<li><a href="{% url 'team_new' %}">Create Team</a></li>
@@ -64,9 +64,22 @@
         </div><!--/.nav-collapse -->
       </div>
     </nav>
-
   
   	<div class="container">
+  	
+	  	{% if messages %}
+			{% for message in messages %}
+				{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+					<div class="alert alert-danger" role="alert">
+					<li>{{ message }}</li>
+				{% else %}
+					<div class="alert alert-success" role="alert">
+					<li>{{ message }}</li>
+				{% endif %}
+    		{% endfor %}
+			</div>
+		{% endif %}
+  	
 		{% block content %}{% endblock %}
     </div>
     

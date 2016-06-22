@@ -3,6 +3,12 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from .models import Team, Event, Swimmer, Participant, Choice
 
+class ContactForm(forms.Form):
+	message = forms.CharField(
+		required=True,
+		widget=forms.Textarea,
+	)
+
 class UserCreateForm(UserCreationForm):
 	email = forms.EmailField(required=True)
 

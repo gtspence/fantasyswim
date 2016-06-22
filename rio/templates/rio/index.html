@@ -9,17 +9,15 @@
         <h2>Entries are now closed</h2>
         {% endif %}
         
-        {% if user.is_authenticated %}
-			{% if not user.team and entries_open %}
-			<a href="{% url 'team_new' %}">Create team</a>
+        {% if not user.is_authenticated %}
+			{% if entries_open %}
+				<h3>Login or Register!</h3>
+				<a href="{% url 'login' %}">Login</a> |
+		        <a href="{% url 'register' %}">Register</a>
+		    {% else %}
+	 		   	<h3>Login!</h3>
+				<a href="{% url 'login' %}">Login</a>
 			{% endif %}
-		{% elif entries_open %}
-			<h3>Login or Register!</h3>
-			<a href="{% url 'login' %}">Login</a> |
-	        <a href="{% url 'register' %}">Register</a>
-	    {% else %}
-	    	<h3>Login!</h3>
-			<a href="{% url 'login' %}">Login</a>
 		{% endif %}
 
 
