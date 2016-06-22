@@ -14,7 +14,7 @@
 
 			{% csrf_token %}
 
-			{{ edit_form.as_p }}
+			{{ edit_form|crispy }}
 
 		<h3>Choices</h3>
 		<li>Times are season bests (2015-2016 for relays)</li>
@@ -22,13 +22,13 @@
 
 			{% for choice_form in choice_form_list %}
 				<strong>{{ choice_form.event.name }}</strong>
-				{{ choice_form.as_p }}
+				{{ choice_form|crispy }}
 			{% endfor %}
 			
 		<h3>World Records</h3>
 		<li>Nominate 3 non-relay events</li><br>
 
-			{{ edit_formWR.as_p }}
+			{{ edit_formWR|crispy }}
 		   
 		<input class="btn btn-default" type="submit" name="submit" value="Save" />
 		</form>
