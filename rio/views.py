@@ -19,7 +19,7 @@ class EventsView(generic.ListView):
 	context_object_name = 'event_list'
 	def get_queryset(self):
 		"""Return all the teams."""
-		return Event.objects.all()	
+		return Event.objects.all().order_by('id')
 
 
 class IndexView(generic.ListView):
@@ -28,7 +28,7 @@ class IndexView(generic.ListView):
 
 	def get_queryset(self):
 		"""Return all the teams."""
-		return Team.objects.all()
+		return Team.objects.all().order_by('name')
 	
 	def get_context_data(self, *args, **kwargs):
 		context = super(IndexView, self).get_context_data(*args, **kwargs)

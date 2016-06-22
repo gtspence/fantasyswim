@@ -59,7 +59,7 @@ def time_converter(t):
 	seconds = remain / 100
 	hundredths = remain - seconds*100
 	if minutes == 0:
-		return str(seconds) + "." + str(hundredths)
+		return str(seconds).zfill(2) + "." + str(hundredths).zfill(2)
 	else:
 		return str(minutes) + ":" + str(seconds).zfill(2) + "." + str(hundredths).zfill(2)
 
@@ -67,11 +67,11 @@ class Participant(models.Model):
 	event = models.ForeignKey(Event)
 	swimmer = models.ForeignKey(Swimmer)
 	time = models.IntegerField("Season Best", null=True, blank=True)
-	STATUS_CHOICES = (('Y', 'Confirmed'), ('N', 'Unconfirmed'), ('X', 'Not swimming'))
-	status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='N')
+	STATUS_CHOICES = (('Confirmed', 'Confirmed'), ('Unconfirmed', 'Unconfirmed'), ('Not swimming', 'Not swimming'))
+	status = models.CharField(max_length=12, choices=STATUS_CHOICES, default='Unconfirmed')
 	points = models.IntegerField(null=True, blank=True)
 	def __str__(self):
-		return '%s %s %s (Confirmed: %s)' % (self.swimmer.name, self.swimmer.country, time_converter(self.time), self.status)
+		return '%s %s %s (%s)' % (self.swimmer.name, self.swimmer.country, time_converter(self.time), self.status)
 	class Meta:
 		unique_together = ('event', 'swimmer')
 		ordering = ['time']
