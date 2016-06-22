@@ -15,7 +15,8 @@
 
         	{% csrf_token %}
 
-            {% crispy user_form %}
+            {{ user_form|crispy }}
+            <button class="btn btn-default" type="submit">Submit</button>
 		</form> 
     </div>
 </div>

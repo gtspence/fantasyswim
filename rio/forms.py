@@ -5,15 +5,12 @@ from .models import Team, Event, Swimmer, Participant, Choice
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 
+
 class ContactForm(forms.Form):
 	message = forms.CharField(
 		required=True,
 		widget=forms.Textarea,
 	)
-	
-	helper = FormHelper()
-	helper.form_method = 'POST'
-	helper.add_input(Submit('send', 'Send', css_class='btn-default'))
 
 
 class UserCreateForm(UserCreationForm):
@@ -29,10 +26,6 @@ class UserCreateForm(UserCreationForm):
 		if commit:
 			user.save()
 		return user
-		
-	helper = FormHelper()
-	helper.form_method = 'POST'
-	helper.add_input(Submit('submit', 'Submit', css_class='btn-default'))
 
 
 class TeamEditForm(forms.ModelForm):

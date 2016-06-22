@@ -12,8 +12,9 @@
 <div class="row">
 	<div class="col-md-6">
 		<form role="form" action="" method="post">
-			{% csrf_token %}
-			{% crispy form %}
+	 	   {% csrf_token %}
+	 	   {{ form|crispy }}
+	 	   <button class="btn btn-default" type="submit">Send</button>
 		</form>
 	</div>
 </div>
