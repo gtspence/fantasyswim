@@ -72,12 +72,15 @@
 				{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
 					<div class="alert alert-danger" role="alert">
 					<li>{{ message }}</li>
+				{% elif message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
+					<div class="alert alert-warning" role="alert">
+					<li>{{ message }}</li>
 				{% else %}
 					<div class="alert alert-success" role="alert">
 					<li>{{ message }}</li>
 				{% endif %}
+				</div>
     		{% endfor %}
-			</div>
 		{% endif %}
   	
 		{% block content %}{% endblock %}

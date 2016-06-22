@@ -90,6 +90,7 @@ class EventView(generic.DetailView):
 
 def register(request):
 	if not settings.ENTRIES_OPEN:
+		messages.error(request, "Entries closed!")
 		return HttpResponseRedirect('/rio/')
 	context = RequestContext(request)
 	if request.method == 'POST':
@@ -122,11 +123,13 @@ def team_edit(request, id=None):
 			return HttpResponseForbidden()
 	else:
 		if Team.objects.filter(user=request.user).exists():
+			messages.warning(request, "You already have a team!")
 			return HttpResponseRedirect(request.user.team.get_absolute_url())
 		team = Team(user=request.user)
 		title = 'Create team'
 	
 	if not settings.ENTRIES_OPEN:
+		messages.warning(request, "Entries closed!")
 		return HttpResponseRedirect(team.get_absolute_url())
 		
 	event_list = Event.objects.all()
