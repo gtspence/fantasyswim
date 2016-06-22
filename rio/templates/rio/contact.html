@@ -1,5 +1,7 @@
 {% extends "rio/base.html" %}
 
+{% load crispy_forms_tags %}
+
 {% block content %}
 
 <h2>Contact Us</h2>
@@ -7,10 +9,13 @@
 <p> <strong>User:</strong> {{ user }}</p>
 <p> <strong>Email:</strong> {{ user.email }}</p>
 
-<form role="form" action="" method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button class="btn btn-default" type="submit">Submit</button>
-</form>
+<div class="row">
+	<div class="col-md-6">
+		<form role="form" action="" method="post">
+			{% csrf_token %}
+			{% crispy form %}
+		</form>
+	</div>
+</div>
 
 {% endblock %}

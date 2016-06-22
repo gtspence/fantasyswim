@@ -1,32 +1,39 @@
 {% extends "rio/base.html" %}
 
+{% load crispy_forms_tags %}
+
 {% block content %}
 
 <h2>{{ title }}</h2>
 
-<form method="post" action="."
-                enctype="multipart/form-data">
+<div class="row">
+	<div class="col-md-6">
 
-	{% csrf_token %}
+		<form method="post" action="."
+						enctype="multipart/form-data">
 
-	{{ edit_form.as_p }}
+			{% csrf_token %}
 
-<h3>Choices</h3>
-<li>Times are season bests (2015-2016 for relays)</li>
-<li>Swimmers will be confirmed when the official entry list is released</li><br>
+			{{ edit_form|crispy }}
 
-	{% for choice_form in choice_form_list %}
-		<strong>{{ choice_form.event.name }}</strong>
-		{{ choice_form.as_p }}
-	{% endfor %}
+		<h3>Choices</h3>
+		<li>Times are season bests (2015-2016 for relays)</li>
+		<li>Swimmers will be confirmed when the official entry list is released</li><br>
+
+			{% for choice_form in choice_form_list %}
+				<strong>{{ choice_form.event.name }}</strong>
+				{{ choice_form|crispy }}
+			{% endfor %}
 			
-<h3>World Records</h3>
-<li>Nominate 3 non-relay events</li><br>
+		<h3>World Records</h3>
+		<li>Nominate 3 non-relay events</li><br>
 
-	{{ edit_formWR.as_p }}
-           
-<input class="btn btn-default" type="submit" name="submit" value="Save" />
-</form>
+			{{ edit_formWR|crispy }}
+		   
+		<input class="btn btn-default" type="submit" name="submit" value="Save" />
+		</form>
+	</div>
+</div>
 {% endblock %}
 
 
