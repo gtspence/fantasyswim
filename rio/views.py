@@ -163,5 +163,4 @@ def team_edit(request, id=None):
 					{'edit_form': edit_form, 
 					'edit_formWR': edit_formWR, 
 					'choice_form_list': choice_form_list,
-					'title': title},
-					context_instance=RequestContext(request))
+					'title': title})

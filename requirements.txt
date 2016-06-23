@@ -1,6 +1,7 @@
 dj-database-url==0.4.1
 Django==1.9.6
 django-crispy-forms==1.6.0
+django-debug-toolbar==1.4
 django-dotenv==1.4.1
 gunicorn==19.4.5
 numpy==1.11.0
@@ -9,5 +10,6 @@ psycopg2==2.6.1
 python-dateutil==2.5.3
 pytz==2016.4
 six==1.10.0
+sqlparse==0.1.19
 wheel==0.26.0
 whitenoise==2.0.6

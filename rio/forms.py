@@ -55,7 +55,7 @@ class TeamEditFormWR(forms.ModelForm):
 class ChoiceEditForm(forms.ModelForm):
 	def __init__(self, event, *args, **kwargs):
 		super (ChoiceEditForm, self ).__init__(*args, **kwargs)
-		self.fields['participant'].queryset = Participant.objects.filter(event=event)
+		self.fields['participant'].queryset = event.participant_set.select_related('swimmer')
 		self.event = event
 	class Meta:
 		model = Choice
