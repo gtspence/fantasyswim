@@ -1,13 +1,10 @@
-{% load i18n %}{% autoescape off %}
-{% blocktrans %}Welcome to {{ site_name }}!{% endblocktrans %}
+{% autoescape off %}
+Welcome to Fantasy Swimming!
 
-{% trans "Your username, in case you've forgotten:" %} {{ user.get_username }}
+Your username is: {{ user.get_username }}
 
-{% trans "Get picking your team!" %}
-{% block reset_link %}
-{{ protocol }}://{{ domain }}{% url 'index' %}
-{% endblock %}
+Get picking your team!
 
-{% blocktrans %}The {{ site_name }} team{% endblocktrans %}
+{{ site_name }}
 
 {% endautoescape %}

@@ -204,7 +204,7 @@ ENTRIES_OPEN = os.environ.get('ENTRIES_OPEN')=='True'
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 # Raygun
-RAYGUN4PY_API_KEY = 'wuNPuFNyPvvj6TNS2nbuYg=='
+RAYGUN4PY_API_KEY = os.environ.get('RAYGUN_KEY')
 
 # try to load local_settings.py if it exists
 try:

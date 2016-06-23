@@ -9,8 +9,10 @@ from django.views import generic
 from django.utils.decorators import method_decorator
 from django.core.urlresolvers import reverse
 from django.conf import settings
-from django.core.mail import send_mail
+from django.core.mail import send_mass_mail, EmailMultiAlternatives
 from django.contrib import messages
+from django.template import loader
+from django.contrib.sites.shortcuts import get_current_site
 
 def rules(request):
 	return render(request, 'rio/rules.html', context={'title':'Rules'})
@@ -24,14 +26,11 @@ def contact(request):
 		form = form_class(request.POST)
 		if form.is_valid():
 			form_message = request.POST.get('message', '')
-			send_mail('Fantasy Swimming - Message from: ' + str(request.user), 
-					message=form_message,
-					from_email=request.user.email, 
-					recipient_list=['fantasyswimming@gmail.com'])
-			send_mail('Fantasy Swimming - Your Sent Message', 
-					message=form_message,
-					from_email='fantasyswimming@gmail.com', 
-					recipient_list=[request.user.email])
+			message1 = ('Fantasy Swimming - Message from: ' + str(request.user), 
+						form_message, request.user.email, ['fantasyswimming@gmail.com'])
+			message2 = ('Fantasy Swimming - Your Sent Message', 
+						form_message, 'fantasyswimming@gmail.com', [request.user.email])
+			send_mass_mail((message1, message2))
 			messages.info(request, 'Message sent to Fantasy Swimming Admin.')
 			return HttpResponseRedirect('/rio/')
 	
@@ -99,11 +98,16 @@ def register(request):
 			user = user_form.save()
 			user = authenticate(username=user_form.cleaned_data.get('username'), password=user_form.cleaned_data.get('password1'))
 			login(request, user)
-			send_mail('Welcome to Fantasy Swimming!', 
-					message='Welcome to Fantasy Swimming', #Try welcome.html??
-					from_email='fantasyswimming@gmail.com', 
-					recipient_list=[user.email])
-			messages.info(request, 'Thanks for registering. Now create a team!')
+			
+			context.update({'user': user, 'site_name': get_current_site(request)})
+			subject='Welcome to Fantasy Swimming!'
+			body = loader.render_to_string('rio/welcome.html', context)
+			from_email='fantasyswimming@gmail.com'
+			to_email=user.email
+			email_message = EmailMultiAlternatives(subject, body, from_email, [to_email])
+			email_message.send()
+			
+			messages.info(request, 'Thanks for registering. Now create your team!')
 			return HttpResponseRedirect('/rio/')
 	else:
 		user_form = UserCreateForm()
