@@ -48,6 +48,7 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'raygun4py.middleware.django.Provider',
 ]
 
 ROOT_URLCONF = 'fantasyswim.urls'
@@ -179,6 +180,8 @@ ENTRIES_OPEN = os.environ.get('ENTRIES_OPEN')=='True'
 # Crispy forms
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
+# Raygun
+RAYGUN4PY_API_KEY = 'wuNPuFNyPvvj6TNS2nbuYg=='
 
 # try to load local_settings.py if it exists
 try:
