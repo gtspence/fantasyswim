@@ -198,7 +198,7 @@ ALLOWED_HOSTS = ['*']
 #SECURE_SSL_REDIRECT = True
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
-
+#SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https') ????
 
 # Entries open variable
 ENTRIES_OPEN = os.environ.get('ENTRIES_OPEN')=='True'

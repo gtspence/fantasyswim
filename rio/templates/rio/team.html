@@ -1,22 +1,22 @@
 {% extends "rio/base.html" %}
 
 {% block content %}
-        <h2>{{ team.name }}</h2>
+<h2>{{ team.name }}</h2>
 
-    {% if user == team.user and entries_open %}
-		{% if not team.complete %}
-			<a href="{% url 'team_edit' team.id %}">Complete your team!</a>
-			{% else %}
-			<a href="{% url 'team_edit' team.id %}">Edit your team</a>
-		{% endif %}
-    {% endif %}
+{% if user == team.user and entries_open %}
+	{% if not team.complete %}
+		<a href="{% url 'team_edit' team.id %}">Complete your team!</a>
+	{% else %}
+		<a href="{% url 'team_edit' team.id %}">Edit your team</a>
+	{% endif %}
+{% endif %}
     
+{% if not entries_open %}   
+<h2><small>Points: {{ team.points }} &emsp; Correct Golds: {{ team.correct_golds }}</small></h2>
+{% endif %}    
     
-    
-    
-	<h3>Choices:</h3>
+<h3>Choices:</h3>
 
-	
 {% if user == team.user or not entries_open %}
 	<div class="row">
 		<div class="col-md-9">
@@ -27,13 +27,18 @@
 						<th>Swimmer</th>
 						<th>Country</th>
 						<th>Status</th>
+						<th>Points</th>
 					</tr>
 				</thead>
 				<tbody>
 	
 				{% for choice in team_choices %}
 					{% if choice.participant %}
+						{% if choice.points == 5 %}
+						<tr class="success">
+						{% else %}
 						<tr>
+						{% endif %}		
 							<td><a href="{{ choice.event.get_absolute_url }}">{{ choice.event }}</a></td>
 							<td>{{ choice.participant.swimmer }} </td>
 							<td>{{ choice.participant.swimmer.country }}</td> 
@@ -45,13 +50,19 @@
 								{% elif choice.participant.status == "Not swimming" %}
 									<span class="label label-danger">Not Swimming</span>
 								{% endif %}
-							</td>
+							</td> 
+							<td>
+								{% if choice.points != None %}
+									{{ choice.points }}
+								{% endif %}
+							</td> 
 						</tr>
 					{% else %}
 						<tr>
 							<td><a href="{{ choice.event.get_absolute_url }}">{{ choice.event }}</td>
 							<td>{{ choice.participant }} </td>
 							<td>-</td> 
+							<td>-</td>
 							<td>-</td>
 						</tr>
 					{% endif %}
@@ -62,41 +73,115 @@
 		</div>
 	</div>
 		
-<h3>World Records:</h3>
-<div class="row">
-	<div class="col-md-5">
-		<table class="table table-hover">
-			<thead>
-				<tr>
-					<th>Event</th>		
-				</tr>
-			</thead>
-			<tbody>
-				<tr>	
-					{% if team.WR_event %}
-						<td><a href="{{ team.WR_event.get_absolute_url }}">{{ team.WR_event }}</a></td>
-					{% else %}
-						<td>{{ team.WR_event }}</td>
-					{% endif %}
-				</tr>
-				<tr>
-					{% if team.WR_event2 %}
-						<td><a href="{{ team.WR_event2.get_absolute_url }}">{{ team.WR_event2 }}</a></td>
-					{% else %}
-						<td>{{ team.WR_event2 }}</td>
-					{% endif %}
-				</tr>
-				<tr>
-					{% if team.WR_event3 %}
-						<td><a href="{{ team.WR_event3.get_absolute_url }}">{{ team.WR_event3 }}</a></td>
-					{% else %}
-						<td>{{ team.WR_event3 }}</td>
-					{% endif %}
-				</tr>
-			</tbody>
-		</table>
-	</div>
-</div>
+	<h3>World Records:</h3>
+	{% if entries_open %}
+		<div class="row">
+			<div class="col-md-5">
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th>Event</th>		
+						</tr>
+					</thead>
+					<tbody>
+						<tr>	
+							{% if team.WR_event %}
+								<td><a href="{{ team.WR_event.get_absolute_url }}">{{ team.WR_event }}</a></td>
+							{% else %}
+								<td>{{ team.WR_event }}</td>
+							{% endif %}
+						</tr>
+						<tr>
+							{% if team.WR_event2 %}
+								<td><a href="{{ team.WR_event2.get_absolute_url }}">{{ team.WR_event2 }}</a></td>
+							{% else %}
+								<td>{{ team.WR_event2 }}</td>
+							{% endif %}
+						</tr>
+						<tr>
+							{% if team.WR_event3 %}
+								<td><a href="{{ team.WR_event3.get_absolute_url }}">{{ team.WR_event3 }}</a></td>
+							{% else %}
+								<td>{{ team.WR_event3 }}</td>
+							{% endif %}
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	{% else %}
+			<div class="row">
+			<div class="col-md-5">
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th>Event</th>	
+							<th>Points</th>	
+						</tr>
+					</thead>
+					<tbody>
+						{% if team.WR_event.wr %}
+							<tr class="success">
+						{% else %}
+							<tr>
+						{% endif %}
+							{% if team.WR_event %}
+								<td><a href="{{ team.WR_event.get_absolute_url }}">{{ team.WR_event }}</a></td>
+								<td>
+									{% if team.WR_event.wr %}
+										5
+									{% else %}
+										0
+									{% endif %}
+								</td>
+							{% else %}
+								<td>{{ team.WR_event }}</td>
+								<td>-</td>
+							{% endif %}
+						</tr>
+						{% if team.WR_event.wr2 %}
+							<tr class="success">
+						{% else %}
+							<tr>
+						{% endif %}
+							{% if team.WR_event2 %}
+								<td><a href="{{ team.WR_event2.get_absolute_url }}">{{ team.WR_event2 }}</a></td>
+								<td>
+									{% if team.WR_event.wr2 %}
+										5
+									{% else %}
+										0
+									{% endif %}
+								</td>
+							{% else %}
+								<td>{{ team.WR_event2 }}</td>
+								<td>-</td>
+							{% endif %}
+						</tr>
+						{% if team.WR_event.wr3 %}
+							<tr class="success">
+						{% else %}
+							<tr>
+						{% endif %}
+							{% if team.WR_event3 %}
+								<td><a href="{{ team.WR_event3.get_absolute_url }}">{{ team.WR_event3 }}</a></td>
+								<td>
+									{% if team.WR_event.wr3 %}
+										5
+									{% else %}
+										0
+									{% endif %}
+								</td>
+							{% else %}
+								<td>{{ team.WR_event3 }}</td>
+								<td>-</td>
+							{% endif %}
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	{% endif %}
 
 {% else %}
 	<p>Other people's choices will be shown when entries close!</p>

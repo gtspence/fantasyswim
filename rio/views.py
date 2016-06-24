@@ -13,6 +13,7 @@ from django.core.mail import send_mass_mail, EmailMultiAlternatives
 from django.contrib import messages
 from django.template import loader
 from django.contrib.sites.shortcuts import get_current_site
+from operator import attrgetter
 
 def rules(request):
 	return render(request, 'rio/rules.html', context={'title':'Rules'})
@@ -55,7 +56,7 @@ class IndexView(generic.ListView):
 
 	def get_queryset(self):
 		"""Return all the teams."""
-		return Team.objects.all().order_by('name')
+		return sorted(Team.objects.all().order_by('name'), key=lambda a: (a.points(), a.correct_golds()), reverse=True)
 	
 	def get_context_data(self, *args, **kwargs):
 		context = super(IndexView, self).get_context_data(*args, **kwargs)

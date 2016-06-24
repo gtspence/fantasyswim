@@ -61,7 +61,35 @@
 	{% endif %}
 
 {% else %}
-
+<h3>League Table</h3>
+	<div class="row">
+		<div class="col-md-8">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th>Team</th>
+						<th>User</th>
+						<th>Points</th>
+						<th>Correct Golds</th>
+					</tr>
+				</thead>
+				<tbody>
+				{% for team in team_list %}
+					{% if user and team.user == user %}
+						<tr class="info">
+					{% else %}
+						<tr>
+					{% endif %}
+							<td><a href="{{ team.get_absolute_url }}">{{ team.name }}</td>
+							<td>{{ team.user }} </td>
+							<td>{{ team.points }} </td>
+							<td>{{ team.correct_golds }} </td>
+						</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
 
 
 {% endif %}
