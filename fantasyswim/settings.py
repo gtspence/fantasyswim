@@ -193,8 +193,11 @@ ADMINS = [('Graeme', 'fantasyswimming@gmail.com'),]
 # Allow all host headers
 ALLOWED_HOSTS = ['*']
 
-# CSRF_COOKIE_SECURE = True
-# SESSION_COOKIE_SECURE = True
+
+# Set up HTTPS
+SECURE_SSL_REDIRECT = True
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
 
 
 # Entries open variable
