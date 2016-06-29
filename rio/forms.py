@@ -36,7 +36,7 @@ class TeamEditForm(forms.ModelForm):
 class TeamEditFormWR(forms.ModelForm):
 	def __init__(self, *args, **kwargs):
 		super (TeamEditFormWR, self ).__init__(*args, **kwargs)
-		self.fields['WR_event'].queryset = Event.objects.filter(relay=False)
+		self.fields['WR_event'].queryset = Event.objects.filter()
 		self.fields['WR_event2'].queryset = Event.objects.filter(relay=False)
 		self.fields['WR_event3'].queryset = Event.objects.filter(relay=False)
 	class Meta:
@@ -48,6 +48,9 @@ class TeamEditFormWR(forms.ModelForm):
 		wr2 = cleaned_data.get("WR_event2")
 		wr3 = cleaned_data.get("WR_event3")
 		wrs = filter(None, [wr1, wr2, wr3])
+		for event in wrs:
+			if event.relay == True:
+				raise forms.ValidationError("Can't select relay event!")
 		if len(wrs) > len(set(wrs)):
 			raise forms.ValidationError("Select different events!")
 		return cleaned_data

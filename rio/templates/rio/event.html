@@ -3,9 +3,8 @@
 {% block content %}
         <h2>Event: {{ event.name }}</h2>
 
-
-<h3>Choices:</h3>
 {% if entries_open %}
+	<h3>Choices:</h3>
 	<p>Everyone's choices will be shown when entries close!</p>
 	
 	<h3>Available Swimmers:</h3>
@@ -44,16 +43,118 @@
 		</div>
 	
 {% else %}
-	<ul>
-	{% for choice in event.choice_set.all %}
-	{% if choice.participant %}
-	<li><a href="{{ choice.team.get_absolute_url }}">{{ choice.team.name }}</a> | {{ choice.team.user }}: {{ choice.participant.swimmer }} {{ choice.participant.swimmer.country }}</li>
-	{% endif %}
-	{% endfor %}
-	</ul>
+
+{% if event.scored %}
+	<h3>Result:</h3>
+	<div class="row">
+		<div class="col-md-5">
+			<ul class="list-group">
+				{% for person in gold %}
+					<li class="list-group-item"><strong>Gold:</strong> {{ person.swimmer }} ({{ person.swimmer.country }})</li>
+				{% endfor %}
+				{% for person in silver %}
+					<li class="list-group-item"><strong>Silver:</strong> {{ person.swimmer }} ({{ person.swimmer.country }})</li>
+				{% endfor %}
+				{% for person in bronze %}
+					<li class="list-group-item"><strong>Bronze:</strong> {{ person.swimmer }} ({{ person.swimmer.country }})</li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+{% endif %}
+
+<h3>Most Popular Choices:</h3>
+	<div class="row">
+		<div class="col-md-9">
+			<table class="table table-hover">
+			<thead>
+				<tr>
+					<th>Swimmer</th>
+					<th>Status</th>
+					<th>Count</th>
+					<th>Points</th>
+				</tr>
+			</thead>
+			<tbody>
+			{% for part in event.participant_set.all %}
+				{% if part.choice_count > 0 %}
+					<tr>
+						<td>
+							{{ part.swimmer }} ({{ part.swimmer.country }})
+						</td> 
+						<td>
+							{% if part.status == "Unconfirmed" %}
+								<span class="label label-default">Unconfirmed</span>
+							{% elif part.status == "Confirmed" %}
+								<span class="label label-success">Confirmed</span>
+							{% elif part.status == "Not swimming" %}
+								<span class="label label-danger">Not Swimming</span>
+							{% endif %}
+						</td>
+						<td>{{ part.choice_count }} </td>
+						<td>
+							{% if part.points != None %}
+								{{ part.points }}
+							{% endif %}
+						</td> 
+					</tr>
+				{% endif %}
+			{% endfor %}
+			</tbody>
+			</table>
+		</div>
+	</div>
+			
+<h3>All Choices:</h3>
+	<div class="row">
+		<div class="col-md-9">
+			<table class="table table-hover">
+			<thead>
+				<tr>
+					<th>Team</th>
+					<th>User</th>
+					<th>Swimmer</th>
+					<th>Status</th>
+					<th>Points</th>
+				</tr>
+			</thead>
+			<tbody>
+			{% for choice in event_choices %}
+				{% if choice.team.user == user %}
+					<tr class="info">
+				{% else %}
+					<tr>
+				{% endif %}
+					<td><a href="{{ choice.team.get_absolute_url }}">{{ choice.team.name }}</a></td>
+					<td>{{ choice.team.user }} </td>
+					<td>
+						{% if choice.participant %}
+							{{ choice.participant.swimmer }} ({{ choice.participant.swimmer.country }})
+						{% endif %}
+					</td> 
+					<td>
+						{% if choice.participant.status == "Unconfirmed" %}
+							<span class="label label-default">Unconfirmed</span>
+						{% elif choice.participant.status == "Confirmed" %}
+							<span class="label label-success">Confirmed</span>
+						{% elif choice.participant.status == "Not swimming" %}
+							<span class="label label-danger">Not Swimming</span>
+						{% endif %}
+					</td>
+					<td>
+						{% if choice.points != None %}
+							{{ choice.points }}
+						{% endif %}
+					</td> 
+				</tr>
+			{% endfor %}
+
+			</tbody>
+			</table>
+		</div>
+	</div>
+
 {% endif %}
 
 {% endblock %}
-
-<li><a href="{{ team.get_absolute_url }}">{{ team.name }}</a> | {{ team.user }}</li>
 

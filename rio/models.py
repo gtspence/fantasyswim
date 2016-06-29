@@ -77,9 +77,13 @@ class Participant(models.Model):
 		return '%s %s %s (%s)' % (self.swimmer.name, self.swimmer.country, time_converter(self.time), self.status)
 	def display_time(self):
 		return time_converter(self.time)
+	def choice_count(self):
+		return len(self.choice_set.all())
 	class Meta:
 		unique_together = ('event', 'swimmer')
 		ordering = ['time']
+
+# Participant.objects.filter(event=context['event']).annotate(num_choices=Count('choice')).order_by('-num_choices')
 	
 class Choice(models.Model):
 	team = models.ForeignKey(Team)

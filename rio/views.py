@@ -14,6 +14,7 @@ from django.contrib import messages
 from django.template import loader
 from django.contrib.sites.shortcuts import get_current_site
 from operator import attrgetter
+from django.db.models import Count
 
 def rules(request):
 	return render(request, 'rio/rules.html', context={'title':'Rules'})
@@ -95,6 +96,10 @@ class EventView(generic.DetailView):
 	
 	def get_context_data(self, *args, **kwargs):
 		context = super(EventView, self).get_context_data(*args, **kwargs)
+		context['event_choices'] =  Choice.objects.filter(event=context['event']).order_by('team__name')
+		context['gold'] = Participant.objects.filter(event=context['event'], points=5)
+		context['silver'] = Participant.objects.filter(event=context['event'], points=2)
+		context['bronze'] = Participant.objects.filter(event=context['event'], points=1)		
 		context['entries_open'] = settings.ENTRIES_OPEN
 		context['title'] = context['event'].name
 		return context
