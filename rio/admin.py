@@ -11,7 +11,7 @@ class ParticipantInline(admin.TabularInline):
 	extra = 1
 
 class EventAdmin(admin.ModelAdmin):
-	list_display = ('name', 'date')
+	list_display = ('name', 'date', 'order')
 
 class ParticipantAdmin(admin.ModelAdmin):
 	list_display = ('event', 'swimmer', 'time', 'status', 'points')

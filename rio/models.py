@@ -7,6 +7,7 @@ from django.db.models import Sum
 class Event(models.Model):
 	name = models.CharField(max_length=50)
 	date = models.DateField("Date of Final", null=True, blank=True)
+	order = models.IntegerField("Event Number", null=True, blank=True)
 	relay = models.BooleanField(default=False)
 	wr = models.BooleanField(default=False)
 	def __str__(self):
