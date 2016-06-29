@@ -42,12 +42,23 @@ class EventsView(generic.ListView):
 	template_name = 'rio/events.html'
 	context_object_name = 'w_event_list'
 	def get_queryset(self):
-		"""Return all the teams."""
+		"""Return all the Women's events."""
 		return Event.objects.filter(name__startswith='W').order_by('id')
 	def get_context_data(self, *args, **kwargs):
 		context = super(EventsView, self).get_context_data(*args, **kwargs)
 		context['m_event_list'] = Event.objects.filter(name__startswith='M').order_by('id')
 		context['title'] = 'Events'
+		return context
+
+class ScheduleView(generic.ListView):
+	template_name = 'rio/schedule.html'
+	context_object_name = 'schedule'
+	def get_queryset(self):
+		"""Return all the events in order order."""
+		return Event.objects.all().order_by('order')
+	def get_context_data(self, *args, **kwargs):
+		context = super(ScheduleView, self).get_context_data(*args, **kwargs)
+		context['title'] = 'Schedule'
 		return context
 
 class IndexView(generic.ListView):

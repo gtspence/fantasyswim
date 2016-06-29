@@ -14,6 +14,8 @@ class Event(models.Model):
 		return self.name
 	def get_absolute_url(self):
 		return reverse('event', args=(self.id,))
+	def scored(self):
+		return Participant.objects.filter(event=self, points=5).exists()
 	class Meta:
 		ordering = ['id']
 
