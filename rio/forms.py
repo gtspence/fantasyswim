@@ -36,7 +36,7 @@ class TeamEditForm(forms.ModelForm):
 class TeamEditFormWR(forms.ModelForm):
 	def __init__(self, *args, **kwargs):
 		super (TeamEditFormWR, self ).__init__(*args, **kwargs)
-		self.fields['WR_event'].queryset = Event.objects.filter()
+		self.fields['WR_event'].queryset = Event.objects.filter(relay=False)
 		self.fields['WR_event2'].queryset = Event.objects.filter(relay=False)
 		self.fields['WR_event3'].queryset = Event.objects.filter(relay=False)
 	class Meta:
