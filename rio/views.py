@@ -146,6 +146,9 @@ def team_edit(request, id=None):
 		if Team.objects.filter(user=request.user).exists():
 			messages.warning(request, "You already have a team!")
 			return HttpResponseRedirect(request.user.team.get_absolute_url())
+		if not settings.ENTRIES_OPEN:
+			messages.warning(request, "Entries closed!")
+			return HttpResponseRedirect('/rio/')
 		team = Team(user=request.user)
 		title = 'Create team'
 	

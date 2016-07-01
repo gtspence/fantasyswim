@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.core.urlresolvers import reverse
 from .models import User, Event, Team, Swimmer, Participant, Choice
 from .forms import UserCreateForm, TeamEditForm, TeamEditFormWR, ChoiceEditForm, ContactForm
@@ -58,10 +58,79 @@ class FormTests(TestCase):
 		self.assertEqual(Choice.objects.get(event=self.correct_event, team=self.team).participant.id, self.participant2.id)
 
 
-# class ViewTests(TestCase):
-# 
-# 	fixtures = ['test_data.json']
+class TeamEditEntriesClosedTests(TestCase):
+
+	fixtures = ['test_data.json']
+	
+	@override_settings(ENTRIES_OPEN=False)
+	def test_cant_access_registration(self):
+		rsp = self.client.get('/rio/register/')
+		self.assertRedirects(rsp, '/rio/')
+	
+	@override_settings(ENTRIES_OPEN=False)
+	def test_cant_access_team_edit(self):
+		user = Team.objects.all()[0].user
+		self.client.force_login(user)
+		team_edit_url = '/rio/team_edit/%s/' % user.team.id
+		rsp = self.client.get(team_edit_url)
+		self.assertRedirects(rsp, user.team.get_absolute_url())
+	
+	@override_settings(ENTRIES_OPEN=False)
+	def test_cant_access_team_create(self):
+		user = User.objects.create_user(username='asdfs', email='asdf@example.com', password='xxxx')
+		self.client.force_login(user)
+		rsp = self.client.get('/rio/team_new/')
+		self.assertRedirects(rsp, '/rio/')
+
+
+class TeamEditEntriesOpenTests(TestCase):
+	
+	fixtures = ['test_data.json']
+		
+	@override_settings(ENTRIES_OPEN=True)
+	def test_can_access_own_team_edit(self):
+		user = Team.objects.all()[0].user
+		right_team = Team.objects.all()[0]
+		self.client.force_login(user)
+		right_team_edit_url = '/rio/team_edit/%s/' % user.team.id
+		rsp = self.client.get(right_team_edit_url)
+		self.assertEqual(rsp.status_code, 200)
+	
+	
+	@override_settings(ENTRIES_OPEN=True)
+	def test_cant_access_other_users_team_edit(self):
+		user = Team.objects.all()[0].user
+		wrong_team = Team.objects.all()[1]
+		self.client.force_login(user)
+		wrong_team_edit_url = '/rio/team_edit/%s/' % wrong_team.id
+		rsp = self.client.get(wrong_team_edit_url)
+		self.assertEqual(rsp.status_code, 403)
+
+	@override_settings(ENTRIES_OPEN=True)
+	def test_cant_create_second_team(self):
+		user = Team.objects.all()[0].user
+		right_team = Team.objects.all()[0]
+		self.client.force_login(user)
+		rsp = self.client.get('/rio/team_new/')
+		self.assertRedirects(rsp, user.team.get_absolute_url())
+	
+# 	def test_can_see_own_team(self):
+# 		user = Team.objects.all()[0].user
+# 		self.client.force_login(user)
+# 		rsp = self.client.get(user.team.get_absolute_url())
+# 		self.assertNotContains(rsp, "<p>Other people's choices will be shown when entries close!</p>")
+# # 		self.assertContains(rsp, )
 # 	
+# 	def test_cant_see_other_users_team(self):
+# 		user = Team.objects.all()[0].user
+# 		wrong_team = Team.objects.all()[1]
+# 		self.client.force_login(user)
+# 		rsp = self.client.get(wrong_team.get_absolute_url())
+# 		self.assertContains(rsp, "<p>Other people's choices will be shown when entries close!</p>")
+# # 		self.assertNotContains(rsp, )
+# # 		
+# 		
+		# 	
 # 	def league_table_correct_ordering(self):
 	
 	
