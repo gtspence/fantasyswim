@@ -40,13 +40,13 @@
           <ul class="nav navbar-nav">        
         	{% if user.is_authenticated %}
             	<li><a href="{% url 'events' %}">Events</a></li>
-            {% endif %}
-           	<li><a href="{% url 'schedule' %}">Schedule</a></li>
-            <li><a href="{% url 'rules' %}">Rules</a></li>
+           		<li><a href="{% url 'schedule' %}">Schedule</a></li>
+				<li><a href="{% url 'rules' %}">Rules</a></li>
+			{% endif %}
           </ul>
           <ul class="nav navbar-nav navbar-right">
         	{% if user.is_authenticated %}
-        		<li><p class="navbar-text"><strong>{{ user }}</strong></p></li>
+        		<li><a href="{% url 'user' user.id %}"><strong>{{ user }}</strong></a></li>
         		{% if user.team.name %}
         			<li><a href="{{ user.team.get_absolute_url }}">My Team</a></li>
         		{% else %}

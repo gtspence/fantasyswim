@@ -1,0 +1,95 @@
+{% extends "rio/base.html" %}
+
+{% block content %}
+
+<h2>{{ page_user }}</h2>
+<br>
+{% if entries_open %}
+	<p class="lead">Entries are <strong>open</strong></p>
+{% else %}
+	<p class="lead">Entries are now <strong>closed</strong></p>
+{% endif %}
+
+{% if not user.team.name and entries_open %}
+	<p class="lead"><a href="{% url 'team_new' %}">Create Team</a></p>
+{% endif %}
+<br>
+
+{% if entries_open %}
+	<h3>Entered teams</h3>
+	{% if team_list %}
+	<div class="row">
+		<div class="col-md-8">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th>Team</th>
+						<th>User</th>
+						<th>Complete?</th>
+					</tr>
+				</thead>
+				<tbody>
+				{% for team in team_list %}
+					{% if team.user == page_user %}
+						<tr class="info">
+					{% else %}
+						<tr>
+					{% endif %}
+							<td><a href="{{ team.get_absolute_url }}">{{ team.name }}</td>
+							<td>{{ team.user }} </td>
+							<td>
+								{% if team.complete %}
+									<span class="glyphicon glyphicon-ok"></span>
+								{% else %}
+									<span class="glyphicon glyphicon-remove"></span>					{% endif %}
+								</td>
+						</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	{% else %}
+		<p>No teams yet!</p>
+	{% endif %}
+
+{% else %}
+
+<!-- ENTER USER'S TEAM PERFORMANCE STATS HERE!!! -->
+
+<h3>League Table</h3>
+	<div class="row">
+		<div class="col-md-8">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th>Team</th>
+						<th>User</th>
+						<th>Points</th>
+						<th>Correct Golds</th>
+					</tr>
+				</thead>
+				<tbody>
+				{% for team in team_list %}
+					{% if user and team.user == page_user %}
+						<tr class="info">
+					{% else %}
+						<tr>
+					{% endif %}
+							<td><a href="{{ team.get_absolute_url }}">{{ team.name }}</td>
+							<td>{{ team.user }} </td>
+							<td>{{ team.points }} </td>
+							<td>{{ team.correct_golds }} </td>
+						</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+
+{% endif %}
+
+
+{% endblock %}

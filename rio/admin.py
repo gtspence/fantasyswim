@@ -2,6 +2,7 @@ from django.contrib import admin
 
 from .models import Team, Event, Swimmer, Participant, Choice
 
+
 class ChoiceInline(admin.TabularInline):
 	model = Choice
 	extra = 1
@@ -28,7 +29,8 @@ class TeamAdmin(admin.ModelAdmin):
 class ChoiceAdmin(admin.ModelAdmin):
 	list_display = ('event', 'team', 'participant', 'points')
 	list_filter = ['team']
- 
+
+
 admin.site.register(Event, EventAdmin)
 admin.site.register(Participant, ParticipantAdmin)
 admin.site.register(Swimmer, SwimmerAdmin)

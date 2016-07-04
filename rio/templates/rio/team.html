@@ -1,13 +1,13 @@
 {% extends "rio/base.html" %}
 
 {% block content %}
-<h2>{{ team.name }}</h2>
+<h2>{{ team.name }} &emsp; <small>{{ team.user }}</small></h2>
 
 {% if user == team.user and entries_open %}
 	{% if not team.complete %}
-		<a href="{% url 'team_edit' team.id %}">Complete your team!</a>
+		<a href="{% url 'team_edit' team.id %}"><big>Complete your team!</big></a>
 	{% else %}
-		<a href="{% url 'team_edit' team.id %}">Edit your team</a>
+		<a href="{% url 'team_edit' team.id %}"><big>Edit your team</big></a>
 	{% endif %}
 {% endif %}
     

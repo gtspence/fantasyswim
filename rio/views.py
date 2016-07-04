@@ -4,7 +4,7 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import authenticate, login
 from .forms import UserCreateForm, TeamEditForm, TeamEditFormWR, ChoiceEditForm, ContactForm
 from django.contrib.auth.decorators import login_required
-from .models import Team, Event, Swimmer, Participant, Choice
+from .models import User, Team, Event, Swimmer, Participant, Choice
 from django.views import generic
 from django.utils.decorators import method_decorator
 from django.core.urlresolvers import reverse
@@ -16,6 +16,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from operator import attrgetter
 from django.db.models import Count
 
+@login_required
 def rules(request):
 	return render(request, 'rio/rules.html', context={'title':'Rules', 'update_date': settings.UPDATE_DATE})
 
@@ -38,7 +39,7 @@ def contact(request):
 	
 	return render(request, 'rio/contact.html', {'form': form_class, 'title':'Contact Us'}, context)
 
-
+@method_decorator(login_required, name='dispatch')
 class EventsView(generic.ListView):
 	template_name = 'rio/events.html'
 	context_object_name = 'w_event_list'
@@ -51,6 +52,7 @@ class EventsView(generic.ListView):
 		context['title'] = 'Events'
 		return context
 
+@method_decorator(login_required, name='dispatch')
 class ScheduleView(generic.ListView):
 	template_name = 'rio/schedule.html'
 	context_object_name = 'schedule'
@@ -62,18 +64,25 @@ class ScheduleView(generic.ListView):
 		context['title'] = 'Schedule'
 		return context
 
-class IndexView(generic.ListView):
-	template_name = 'rio/index.html'
-	context_object_name = 'team_list'
 
-	def get_queryset(self):
-		"""Return all the teams."""
-		return sorted(Team.objects.all().order_by('name'), key=lambda a: (a.points(), a.correct_golds()), reverse=True)
+def index(request):
+	if request.user.is_authenticated():
+		return HttpResponseRedirect(reverse('user', args=(request.user.id,)))
+	else:
+		return render(request, 'rio/index.html', {'entries_open': settings.ENTRIES_OPEN})
+
+@login_required
+def user(request, pk):
+	page_user = get_object_or_404(User, id=pk)
+	if page_user.id != request.user.id and not request.user.is_superuser:
+		messages.warning(request, "You just tried to access the wrong user page")
+		return HttpResponseRedirect('/rio/')
 	
-	def get_context_data(self, *args, **kwargs):
-		context = super(IndexView, self).get_context_data(*args, **kwargs)
-		context['entries_open'] = settings.ENTRIES_OPEN
-		return context
+	return render(request, 'rio/user.html', 
+				{'page_user': page_user, 
+				'entries_open': settings.ENTRIES_OPEN,
+				'team_list': sorted(Team.objects.all().order_by('name'), key=lambda a: (a.points(), a.correct_golds()), reverse=True),
+				})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -87,7 +96,7 @@ class TeamView(generic.DetailView):
 		context['entries_open'] = settings.ENTRIES_OPEN
 		context['title'] = context['team'].name
 		return context
-		
+
 
 @method_decorator(login_required, name='dispatch')
 class EventView(generic.DetailView):
@@ -107,7 +116,7 @@ class EventView(generic.DetailView):
 
 def register(request):
 	if not settings.ENTRIES_OPEN:
-		messages.error(request, "Entries closed!")
+		messages.error(request, "Entries have closed!")
 		return HttpResponseRedirect('/rio/')
 	context = RequestContext(request)
 	if request.method == 'POST':
@@ -126,7 +135,7 @@ def register(request):
 			email_message.send()
 			
 			messages.info(request, 'Thanks for registering. Now create your team!')
-			return HttpResponseRedirect('/rio/')
+			return HttpResponseRedirect(reverse('user', args=(request.user.id,)))
 	else:
 		user_form = UserCreateForm()
 	return render(request,
@@ -142,7 +151,8 @@ def team_edit(request, id=None):
 		team = get_object_or_404(Team, pk=id)
 		title = 'Edit team'
 		if team.user != request.user:
-			return HttpResponseForbidden()
+			messages.warning(request, "You just tried to edit the wrong team")
+			return HttpResponseRedirect('/rio/')
 	else:
 		if Team.objects.filter(user=request.user).exists():
 			messages.warning(request, "You already have a team!")

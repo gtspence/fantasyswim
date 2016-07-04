@@ -1,97 +1,29 @@
 {% extends "rio/base.html" %}
 
 {% block content %}
-        <h1>Welcome to Fantasy Swimming Rio!</h1>
-        
-        {% if entries_open %}
-        <h2>Entries are open</h2>
-        {% else %}
-        <h2>Entries are now closed</h2>
-        {% endif %}
-        
-        {% if not user.is_authenticated %}
-			{% if entries_open %}
-				<h3>Login or Register!</h3>
-				<a href="{% url 'login' %}">Login</a> |
-		        <a href="{% url 'register' %}">Register</a>
-		    {% else %}
-	 		   	<h3>Login!</h3>
-				<a href="{% url 'login' %}">Login</a>
-			{% endif %}
-		{% endif %}
 
-
-{% if entries_open %}
-	<h3>Entered teams</h3>
-	{% if team_list %}
-	<div class="row">
-		<div class="col-md-8">
-			<table class="table table-hover">
-				<thead>
-					<tr>
-						<th>Team</th>
-						<th>User</th>
-						<th>Complete?</th>
-					</tr>
-				</thead>
-				<tbody>
-				{% for team in team_list %}
-					{% if team.user == user %}
-						<tr class="info">
-					{% else %}
-						<tr>
-					{% endif %}
-							<td><a href="{{ team.get_absolute_url }}">{{ team.name }}</td>
-							<td>{{ team.user }} </td>
-							<td>
-								{% if team.complete %}
-									<span class="glyphicon glyphicon-ok"></span>
-								{% else %}
-									<span class="glyphicon glyphicon-remove"></span>					{% endif %}
-								</td>
-						</tr>
-				{% endfor %}
-				</tbody>
-			</table>
-		</div>
-	</div>
-
+<div class="jumbotron">
+	<h2>Welcome to Fantasy Swimming Rio!</h2>
+	{% if entries_open %}
+		<p>Entries are <strong>open</strong></p>
 	{% else %}
-		<p>No teams yet!</p>
+		<p>Entries are now <strong>closed</strong></p>
 	{% endif %}
+	<p>
+		<a class="btn btn-primary btn-lg" href="{% url 'login' %}" role="button">Login</a>
+		{% if entries_open %}
+			<a class="btn btn-primary btn-lg" href="{% url 'register' %}" role="button">Register</a>
+		{% endif %}
+	</p>
+</div>
 
-{% else %}
-<h3>League Table</h3>
-	<div class="row">
-		<div class="col-md-8">
-			<table class="table table-hover">
-				<thead>
-					<tr>
-						<th>Team</th>
-						<th>User</th>
-						<th>Points</th>
-						<th>Correct Golds</th>
-					</tr>
-				</thead>
-				<tbody>
-				{% for team in team_list %}
-					{% if user and team.user == user %}
-						<tr class="info">
-					{% else %}
-						<tr>
-					{% endif %}
-							<td><a href="{{ team.get_absolute_url }}">{{ team.name }}</td>
-							<td>{{ team.user }} </td>
-							<td>{{ team.points }} </td>
-							<td>{{ team.correct_golds }} </td>
-						</tr>
-				{% endfor %}
-				</tbody>
-			</table>
-		</div>
-	</div>
-
-
-{% endif %}
+<blockquote>
+	<p class="lead">
+		Make <b>gold medal predictions</b> for each swimming event at Rio...
+	</p>
+	<p class="lead">
+		And <b>score points</b> depending on how your choices do!
+	</p>
+</blockquote>
 
 {% endblock %}
