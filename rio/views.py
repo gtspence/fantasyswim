@@ -17,7 +17,7 @@ from operator import attrgetter
 from django.db.models import Count
 
 def rules(request):
-	return render(request, 'rio/rules.html', context={'title':'Rules'})
+	return render(request, 'rio/rules.html', context={'title':'Rules', 'update_date': settings.UPDATE_DATE})
 
 @login_required
 def contact(request):
@@ -102,6 +102,7 @@ class EventView(generic.DetailView):
 		context['bronze'] = Participant.objects.filter(event=context['event'], points=1)		
 		context['entries_open'] = settings.ENTRIES_OPEN
 		context['title'] = context['event'].name
+# 		context['user_pick'] = 
 		return context
 
 def register(request):

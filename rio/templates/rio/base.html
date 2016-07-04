@@ -40,8 +40,8 @@
           <ul class="nav navbar-nav">        
         	{% if user.is_authenticated %}
             	<li><a href="{% url 'events' %}">Events</a></li>
-            	<li><a href="{% url 'schedule' %}">Schedule</a></li>
             {% endif %}
+           	<li><a href="{% url 'schedule' %}">Schedule</a></li>
             <li><a href="{% url 'rules' %}">Rules</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
