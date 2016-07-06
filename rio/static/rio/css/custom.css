@@ -10,3 +10,5 @@ height: 100%;}
 .jumbotron p{
     color: white;
 }
+
+.navbar-collapse { max-height: 100% !important; }
