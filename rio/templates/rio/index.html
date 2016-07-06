@@ -10,9 +10,9 @@
 		<p>Entries are now <strong>closed</strong></p>
 	{% endif %}
 	<p>
-		<a class="btn btn-primary btn-lg" href="{% url 'login' %}" role="button">Login</a>
+		<a class="btn btn-default btn-lg" href="{% url 'login' %}" role="button">Login</a>
 		{% if entries_open %}
-			<a class="btn btn-primary btn-lg" href="{% url 'register' %}" role="button">Register</a>
+			<a class="btn btn-default btn-lg" href="{% url 'register' %}" role="button">Register</a>
 		{% endif %}
 	</p>
 </div>

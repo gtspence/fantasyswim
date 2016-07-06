@@ -1,0 +1,12 @@
+.jumbotron {
+background-image: url("tiles.jpg");
+background-size: cover;
+height: 100%;}
+
+.jumbotron h2{
+    color: white;
+}
+
+.jumbotron p{
+    color: white;
+}
