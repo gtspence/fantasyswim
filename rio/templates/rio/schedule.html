@@ -18,7 +18,11 @@
 			</thead>
 			<tbody>
 			{% for event in schedule %}
+				{% if event.scored %}
+					<tr class="success">
+				{% else %}
 					<tr>
+				{% endif %}
 						<td><a href="{{ event.get_absolute_url }}">{{ event.name }}</a></td>
 						<td>{{ event.date }} </td>
 						<td>

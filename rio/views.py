@@ -78,9 +78,13 @@ def user(request, pk):
 		messages.warning(request, "You just tried to access the wrong user page")
 		return HttpResponseRedirect('/rio/')
 	
+	events_scored = float(sum([event.scored() for event in Event.objects.all()]))
+	progress = int(round(events_scored / Event.objects.all().count() * 100))
+	
 	return render(request, 'rio/user.html', 
 				{'page_user': page_user, 
 				'entries_open': settings.ENTRIES_OPEN,
+				'progress': progress,
 				'team_list': sorted(Team.objects.all().order_by('name'), key=lambda a: (a.points(), a.correct_golds()), reverse=True),
 				})
 
@@ -105,13 +109,13 @@ class EventView(generic.DetailView):
 	
 	def get_context_data(self, *args, **kwargs):
 		context = super(EventView, self).get_context_data(*args, **kwargs)
-		context['event_choices'] =  Choice.objects.filter(event=context['event']).order_by('team__name')
 		context['gold'] = Participant.objects.filter(event=context['event'], points=5)
 		context['silver'] = Participant.objects.filter(event=context['event'], points=2)
 		context['bronze'] = Participant.objects.filter(event=context['event'], points=1)		
 		context['entries_open'] = settings.ENTRIES_OPEN
 		context['title'] = context['event'].name
-# 		context['user_pick'] = 
+		context['participant_list'] = sorted(context['event'].participant_set.all(), key=lambda a: a.choice_count(), reverse=True)
+		context['user_pick'] = Participant.objects.get(event=context['event'], choice__team__user=self.request.user)
 		return context
 
 def register(request):
