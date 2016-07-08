@@ -4,15 +4,18 @@
 
 <h2>Fantasy Swimming Rio!</h2>
 <br>
-{% if entries_open %}
-	<p class="lead">Entries are <strong>open</strong></p>
-{% else %}
-	<p class="lead">Entries are now <strong>closed</strong></p>
-{% endif %}
+<blockquote>
+	{% if entries_open %}
+		<p class="lead">Entries are <strong>open</strong></p>
+		<p class="lead">{{ start_date|timeuntil }} to go, {{ number_teams }} team{{ number_teams|pluralize }} entered...</p>
+	{% else %}
+		<p class="lead">Entries are now <strong>closed</strong></p>
+	{% endif %}
 
-{% if not user.team.name and entries_open %}
-	<p class="lead"><a href="{% url 'team_new' %}">Create Team</a></p>
-{% endif %}
+	{% if not user.team.name and entries_open %}
+		<p class="lead"><a href="{% url 'team_new' %}">Create Team</a></p>
+	{% endif %}
+</blockquote>
 <br>
 
 {% if entries_open %}

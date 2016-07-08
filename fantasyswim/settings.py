@@ -203,6 +203,7 @@ SESSION_COOKIE_SECURE = True
 # Entries open variable
 ENTRIES_OPEN = os.environ.get('ENTRIES_OPEN')=='True'
 UPDATE_DATE = os.environ.get('UPDATE_DATE')
+CLOSING_DATETIME = os.environ.get('CLOSING_DATETIME')
 
 # Crispy forms
 CRISPY_TEMPLATE_PACK = 'bootstrap3'

@@ -15,6 +15,7 @@ from django.template import loader
 from django.contrib.sites.shortcuts import get_current_site
 from operator import attrgetter
 from django.db.models import Count
+from datetime import datetime
 
 @login_required
 def rules(request):
@@ -81,10 +82,15 @@ def user(request, pk):
 	events_scored = float(sum([event.scored() for event in Event.objects.all()]))
 	progress = int(round(events_scored / Event.objects.all().count() * 100))
 	
+	number_teams = Team.objects.all().count()
+	start_date = datetime.strptime(settings.CLOSING_DATETIME, '%d/%m/%Y %H:%M %Z')
+	
 	return render(request, 'rio/user.html', 
 				{'page_user': page_user, 
 				'entries_open': settings.ENTRIES_OPEN,
 				'progress': progress,
+				'number_teams': number_teams,
+				'start_date': start_date,
 				'team_list': sorted(Team.objects.all().order_by('name'), key=lambda a: (a.points(), a.correct_golds()), reverse=True),
 				})
 
