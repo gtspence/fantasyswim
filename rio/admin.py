@@ -2,6 +2,9 @@ from django.contrib import admin
 
 from .models import Team, Event, Swimmer, Participant, Choice
 
+from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.models import User
+
 
 class ChoiceInline(admin.TabularInline):
 	model = Choice
@@ -30,7 +33,10 @@ class ChoiceAdmin(admin.ModelAdmin):
 	list_display = ('event', 'team', 'participant', 'points')
 	list_filter = ['team']
 
+UserAdmin.list_display = ('username', 'email', 'date_joined', 'last_login', 'is_staff', 'is_superuser')
 
+admin.site.unregister(User)
+admin.site.register(User, UserAdmin)
 admin.site.register(Event, EventAdmin)
 admin.site.register(Participant, ParticipantAdmin)
 admin.site.register(Swimmer, SwimmerAdmin)
