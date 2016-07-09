@@ -19,9 +19,23 @@ class Event(models.Model):
 	class Meta:
 		ordering = ['id']
 
+class League(models.Model):
+	creator = models.OneToOneField(User)
+	name = models.CharField("League Name", max_length=100)
+	date_created = models.DateTimeField("Date Created", null=True, blank=True)
+	def __str__(self):
+ 		return '%s (Created by: %s)' % (self.name, self.creator.username)
+ 	class Meta:
+		ordering = ['name']
+	def get_absolute_url(self):
+		return reverse('league', args=(self.id,))
+	def size(self):
+		return len(self.team_set.all())
+
 class Team(models.Model):
 	user = models.OneToOneField(User)
 	name = models.CharField("Team Name", max_length=200)
+	league = models.ForeignKey(League, on_delete=models.SET_NULL, blank=True, null=True)
 	WR_event = models.ForeignKey(Event, limit_choices_to={'relay': False}, 
 								blank=True, null=True, 
 								related_name="WR_event", verbose_name=u'WR event 1')
@@ -82,8 +96,6 @@ class Participant(models.Model):
 	class Meta:
 		unique_together = ('event', 'swimmer')
 		ordering = ['time']
-
-# Participant.objects.filter(event=context['event']).annotate(num_choices=Count('choice')).order_by('-num_choices')
 	
 class Choice(models.Model):
 	team = models.ForeignKey(Team)

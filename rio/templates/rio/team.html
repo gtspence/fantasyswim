@@ -13,7 +13,15 @@
     
 {% if not entries_open %}   
 <h2><small>Points: {{ team.points }} &emsp; Correct Golds: {{ team.correct_golds }}</small></h2>
-{% endif %}    
+{% endif %}
+
+{% if team.league %}
+	<h3>League:</h3>
+	<a href="{% url 'league' team.league.id %}"><big>{{ team.league.name }}</big></a>
+{% elif entries_open and user == team.user %}
+	<h3>League:</h3>
+	<a href="{% url 'team_edit' team.id %}"><big>Join a League!</big></a>
+{% endif %}
     
 <h3>Choices:</h3>
 

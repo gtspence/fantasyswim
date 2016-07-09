@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Team, Event, Swimmer, Participant, Choice
+from .models import Team, Event, Swimmer, Participant, Choice, League
 
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
@@ -27,11 +27,14 @@ class SwimmerAdmin(admin.ModelAdmin):
 	inlines = [ParticipantInline]
 
 class TeamAdmin(admin.ModelAdmin):
-	list_display = ('user', 'name', 'points', 'correct_golds')
+	list_display = ('user', 'name', 'league', 'points', 'correct_golds')
  
 class ChoiceAdmin(admin.ModelAdmin):
 	list_display = ('event', 'team', 'participant', 'points')
 	list_filter = ['team']
+
+class LeagueAdmin(admin.ModelAdmin):
+	list_display = ('name', 'creator', 'date_created')
 
 UserAdmin.list_display = ('username', 'email', 'date_joined', 'last_login', 'is_staff', 'is_superuser')
 
@@ -42,3 +45,4 @@ admin.site.register(Participant, ParticipantAdmin)
 admin.site.register(Swimmer, SwimmerAdmin)
 admin.site.register(Team, TeamAdmin)
 admin.site.register(Choice, ChoiceAdmin)
+admin.site.register(League, LeagueAdmin)

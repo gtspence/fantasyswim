@@ -1,0 +1,89 @@
+{% extends "rio/base.html" %}
+
+{% block content %}
+
+<h2>Overall League</h2>
+<br>
+
+{% if entries_open %}
+	<h3>Entered teams</h3>
+	{% if team_list %}
+	<div class="row">
+		<div class="col-md-8 table-responsive">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th>Team</th>
+						<th>User</th>
+						<th>Complete?</th>
+					</tr>
+				</thead>
+				<tbody>
+				{% for team in team_list %}
+					{% if team.user == user %}
+						<tr class="info">
+					{% else %}
+						<tr>
+					{% endif %}
+							<td><a href="{{ team.get_absolute_url }}">{{ team.name }}</td>
+							<td>{{ team.user }} </td>
+							<td>
+								{% if team.complete %}
+									<span class="glyphicon glyphicon-ok"></span>
+								{% else %}
+									<span class="glyphicon glyphicon-remove"></span>					{% endif %}
+								</td>
+						</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	{% else %}
+		<p>No teams yet!</p>
+	{% endif %}
+
+{% else %}
+
+<div class="progress">
+  <div class="progress-bar progress-bar-success" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: {{ progress }}%;">
+    {{ progress }}%
+  </div>
+</div>
+
+<h3>League Table</h3>
+	<div class="row">
+		<div class="col-md-8">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th>Team</th>
+						<th>User</th>
+						<th>Points</th>
+						<th>Correct Golds</th>
+					</tr>
+				</thead>
+				<tbody>
+				{% for team in team_list %}
+					{% if user and team.user == page_user %}
+						<tr class="info">
+					{% else %}
+						<tr>
+					{% endif %}
+							<td><a href="{{ team.get_absolute_url }}">{{ team.name }}</td>
+							<td>{{ team.user }} </td>
+							<td>{{ team.points }} </td>
+							<td>{{ team.correct_golds }} </td>
+						</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+
+{% endif %}
+
+
+{% endblock %}

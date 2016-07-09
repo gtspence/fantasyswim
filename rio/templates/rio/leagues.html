@@ -1,0 +1,45 @@
+{% extends "rio/base.html" %}
+
+{% block content %}
+
+<h2>Leagues</h2>
+
+<br>
+<p class="lead"><a href="{% url 'overall' %}"><big>Overall league</big></a></p>
+<br>
+
+{% if leagues %}
+<div class="row">
+	<div class="col-md-8 table-responsive">
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Creator</th>
+					<th>Number of teams</th>
+				</tr>
+			</thead>
+			<tbody>
+			{% for league in leagues %}
+				{% if league == user.team.league %}
+					<tr class="info">
+				{% else %}
+					<tr>
+				{% endif %}
+					<td><a href="{{ league.get_absolute_url }}">{{ league.name }}</td>
+					<td>{{ league.creator }} </td>
+					<td>{{ league.size }}</td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
+
+{% else %}
+	<p><big>No leagues yet!</big></p>
+	<p><big>Create a league XXXXX</big></p>
+{% endif %}
+
+
+{% endblock %}
