@@ -92,7 +92,7 @@ def user(request, pk):
 				'progress': progress,
 				'number_teams': number_teams,
 				'start_date': start_date,
-				'team_list': sorted(Team.objects.all().order_by('name'), key=lambda a: (a.points(), a.correct_golds()), reverse=True),
+				'team_list': sorted(Team.objects.order_by('name'), key=lambda a: (a.points(), a.correct_golds()), reverse=True),
 				})
 
 @method_decorator(login_required, name='dispatch')
@@ -101,7 +101,7 @@ class LeaguesView(generic.ListView):
 	context_object_name = 'leagues'
 	def get_queryset(self):
 		"""Return all the leagues."""
-		return League.objects.all().order_by('name')
+		return League.objects.all()
 	def get_context_data(self, *args, **kwargs):
 		context = super(LeaguesView, self).get_context_data(*args, **kwargs)
 		context['title'] = 'Leagues'
@@ -207,7 +207,7 @@ def league_create(request):
 	
 	if League.objects.filter(creator=user).exists():
 		league = League.objects.get(creator=user)
-		messages.warning(request, 'You have already created this league')
+		messages.warning(request, 'You have already created this league! Contact us if you would like to delete it.')
 		return HttpResponseRedirect(reverse('league', args=(league.id,)))
 		
 	if request.method == 'POST':

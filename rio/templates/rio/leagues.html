@@ -5,8 +5,12 @@
 <h2>Leagues</h2>
 
 <br>
-<p class="lead"><a href="{% url 'overall' %}"><big>Overall league</big></a></p>
-<br>
+<p class="lead"><a href="{% url 'overall' %}">Overall league</a></p>
+<p class="lead"><a href="{% url 'league_create' %}">Create your own league</a></p>
+
+<blockquote>
+	<p class="lead">Each team can only be in one league</p>
+</blockquote>
 
 {% if leagues %}
 <div class="row">
@@ -14,7 +18,7 @@
 		<table class="table table-hover">
 			<thead>
 				<tr>
-					<th>Name</th>
+					<th>League name</th>
 					<th>Creator</th>
 					<th>Number of teams</th>
 				</tr>
@@ -37,8 +41,7 @@
 </div>
 
 {% else %}
-	<p><big>No leagues yet!</big></p>
-	<p><big>Create a league XXXXX</big></p>
+	<p class="lead"><big>No leagues yet!</big></p>
 {% endif %}
 
 

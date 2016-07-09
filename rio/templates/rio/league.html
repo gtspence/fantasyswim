@@ -4,6 +4,11 @@
 <h2>{{ league.name }} <small>{{ league.creator }}</small></h2>
 <br>
 {% if entries_open %}
+
+	{% if user.team and user.team.league != league %}
+		<a href="{% url 'team_edit' user.team.id %}"><big>Join this league!</big></a>
+	{% endif %}
+
 	<h3>Teams</h3>
 		{% if league_teams %}
 	<div class="row">
