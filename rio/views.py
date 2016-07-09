@@ -121,7 +121,7 @@ class EventView(generic.DetailView):
 		context['entries_open'] = settings.ENTRIES_OPEN
 		context['title'] = context['event'].name
 		context['participant_list'] = sorted(context['event'].participant_set.all(), key=lambda a: a.choice_count(), reverse=True)
-# 		context['user_pick'] = Participant.objects.get(event=context['event'], choice__team__user=self.request.user)
+		context['user_pick'] = Participant.objects.filter(event=context['event'], choice__team__user=self.request.user)
 		return context
 
 def register(request):

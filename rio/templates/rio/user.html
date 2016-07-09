@@ -11,11 +11,11 @@
 	{% else %}
 		<p class="lead">Entries are now <strong>closed</strong></p>
 	{% endif %}
+</blockquote>
 
 	{% if not user.team.name and entries_open %}
 		<p class="lead"><a href="{% url 'team_new' %}">Create Team</a></p>
 	{% endif %}
-</blockquote>
 <br>
 
 {% if entries_open %}

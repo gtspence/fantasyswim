@@ -5,7 +5,7 @@
 
 {% if entries_open %}
 	<h3>Choices:</h3>
-	<p>Everyone's choices will be shown when entries close!</p>
+	<p>The most popular choices will be shown when entries close!</p>
 	
 	<h3>Available Swimmers:</h3>
 		<div class="row">
@@ -63,6 +63,7 @@
 	</div>
 {% endif %}
 
+
 <h3>Most Popular Choices:</h3>
 	<div class="row">
 		<div class="col-md-9">
@@ -78,7 +79,7 @@
 			<tbody>
 			{% for part in participant_list %}
 				{% if part.choice_count > 0 %}
-					{% if part == user_pick %}
+					{% if part in user_pick %}
 						<tr class="info">
 					{% else %}
 						<tr>
