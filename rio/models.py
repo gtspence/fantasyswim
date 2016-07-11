@@ -22,6 +22,7 @@ class Event(models.Model):
 class League(models.Model):
 	creator = models.OneToOneField(User)
 	name = models.CharField("League Name", max_length=100, unique=True)
+	description = models.CharField("League Description", max_length=200, null=True, blank=True)
 	date_created = models.DateTimeField("Date Created", null=True, blank=True)
 	def __str__(self):
  		return '%s (Created by: %s)' % (self.name, self.creator.username)

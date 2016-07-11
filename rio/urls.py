@@ -19,6 +19,7 @@ urlpatterns = [
     url(r'^login/$', auth_views.login, {'extra_context': {'title': 'Login'}}, name='login'),
     url('^', include('django.contrib.auth.urls')),
     url(r'^team_new/$', views.team_edit, name='team_new'),
-    url(r'^league_create/$', views.league_create, name='league_create'),
+    url(r'^league_create/$', views.league_edit, name='league_create'),
+    url(r'^league_edit/(?P<id>[0-9]+)/$', views.league_edit, name='league_edit'),
 	url(r'^team_edit/(?P<id>\d+)/$', views.team_edit, name='team_edit'),
 ]

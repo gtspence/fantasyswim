@@ -18,12 +18,12 @@
 
 			<p><big><b>Creator:</b> {{ user }}</big></p>
 			<br>
-			{% if user.team.league %}
+			{% if user.team.league != league %}
 				<p><big>Your team will be transferred from your current league into this league</big></p>
-			{% else %}
+			{% elif not user.team.league %}
 				<p><big>Your team will be automatically entered into this league</big></p>
 			{% endif %}
-		<input class="btn btn-default" type="submit" name="submit" value="Save" />
+		<input class="btn btn-default" type="submit" name="submit" value="Submit" />
 		</form>
 	</div>
 </div>

@@ -195,26 +195,41 @@ def register(request):
 		context)
 
 
+# context = RequestContext(request)
 @login_required
-def league_create(request):
-	form_class = LeagueCreateForm
-	context = RequestContext(request)
+def league_edit(request, id=None):
+	
 	user = request.user
 	
-	if not Team.objects.filter(user=user).exists():
-		messages.warning(request, 'Create a team before you create a league!')
-		return HttpResponseRedirect(reverse('user', args=(user.id,)))
+	if id:
+		league = get_object_or_404(League, pk=id)
+		title = 'Edit league'
+		if league.creator != user:
+			messages.warning(request, "You are not the creator of that league!")
+			return HttpResponseRedirect(league.get_absolute_url())
+		if not settings.ENTRIES_OPEN:
+			messages.warning(request, "Entries closed, you can't edit your league")
+			return HttpResponseRedirect(league.get_absolute_url())
 	
-	if League.objects.filter(creator=user).exists():
-		league = League.objects.get(creator=user)
-		messages.warning(request, 'You have already created this league! Contact us if you would like to delete it.')
-		return HttpResponseRedirect(reverse('league', args=(league.id,)))
+	else:
+		if not Team.objects.filter(user=request.user).exists():
+			messages.warning(request, 'Create a team before you create a league!')
+			return HttpResponseRedirect(reverse('user', args=(user.id,)))	
+		if League.objects.filter(creator=user).exists():
+			league = League.objects.get(creator=user)
+			messages.warning(request, 'You have already created this league!')
+			return HttpResponseRedirect(reverse('league', args=(league.id,)))
+		if not settings.ENTRIES_OPEN:
+			messages.warning(request, "Entries closed, you can't create a league")
+			return HttpResponseRedirect(league.get_absolute_url())
+		title = 'Create a league'
+		league = League(creator=user)
+	
+	form = LeagueCreateForm(request.POST or None, instance=league)
 		
 	if request.method == 'POST':
-		form = form_class(request.POST)
 		if form.is_valid():
 			league = form.save(commit=False)
-			league.creator = user
 			league.date_created = datetime.now()
 			league.save()
 			team = user.team
@@ -223,7 +238,7 @@ def league_create(request):
 			messages.success(request, 'League created!')
 			return HttpResponseRedirect(reverse('league', args=(league.id,)))
 
-	return render(request, 'rio/league_create.html', {'form': form_class, 'title':'Create a League'}, context)
+	return render(request, 'rio/league_edit.html', {'form': form, 'title': title, 'league': league})
 
 
 

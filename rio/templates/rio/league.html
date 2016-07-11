@@ -2,6 +2,15 @@
 
 {% block content %}
 <h2>{{ league.name }} <small>{{ league.creator }}</small></h2>
+
+{% if league.description %}
+	<p><big>{{ league.description }}</big></p>
+{% endif %}
+
+{% if user == league.creator %}
+	<a href="{% url 'league_edit' league.id %}"><big>Edit league</big></a>
+{% endif %}
+
 <br>
 {% if entries_open %}
 

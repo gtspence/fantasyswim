@@ -31,7 +31,7 @@ class UserCreateForm(UserCreationForm):
 class LeagueCreateForm(forms.ModelForm):
 	class Meta:
 		model = League
-		fields = ['name']
+		fields = ['name', 'description']
 
 
 class TeamEditForm(forms.ModelForm):
