@@ -6,7 +6,9 @@
 
 <br>
 <p class="lead"><a href="{% url 'overall' %}">Overall league</a></p>
-<p class="lead"><a href="{% url 'league_create' %}">Create your own league</a></p>
+{% if entries_open %}
+	<p class="lead"><a href="{% url 'league_create' %}">Create your own league</a></p>
+{% endif %}
 
 <blockquote>
 	<p class="lead">Each team can only be in one league</p>

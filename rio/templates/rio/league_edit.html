@@ -18,7 +18,7 @@
 
 			<p><big><b>Creator:</b> {{ user }}</big></p>
 			<br>
-			{% if user.team.league != league %}
+			{% if user.team.league and user.team.league != league %}
 				<p><big>Your team will be transferred from your current league into this league</big></p>
 			{% elif not user.team.league %}
 				<p><big>Your team will be automatically entered into this league</big></p>

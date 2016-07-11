@@ -105,6 +105,7 @@ class LeaguesView(generic.ListView):
 	def get_context_data(self, *args, **kwargs):
 		context = super(LeaguesView, self).get_context_data(*args, **kwargs)
 		context['title'] = 'Leagues'
+		context['entries_open'] = settings.ENTRIES_OPEN
 		return context
 
 @method_decorator(login_required, name='dispatch')
@@ -205,7 +206,7 @@ def league_edit(request, id=None):
 		league = get_object_or_404(League, pk=id)
 		title = 'Edit league'
 		if league.creator != user:
-			messages.warning(request, "You are not the creator of that league!")
+			messages.warning(request, "You are not the creator of this league!")
 			return HttpResponseRedirect(league.get_absolute_url())
 		if not settings.ENTRIES_OPEN:
 			messages.warning(request, "Entries closed, you can't edit your league")
@@ -239,7 +240,6 @@ def league_edit(request, id=None):
 			return HttpResponseRedirect(reverse('league', args=(league.id,)))
 
 	return render(request, 'rio/league_edit.html', {'form': form, 'title': title, 'league': league})
-
 
 
 @login_required
