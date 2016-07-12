@@ -30,7 +30,7 @@
 							</tr>
 						</thead>
 						<tbody>
-						{% for team in league_teams %}
+						{% for rank, team in teams_and_ranks %}
 							{% if team.user == user %}
 								<tr class="info">
 							{% else %}
@@ -57,6 +57,7 @@
 
 
 {% else %}
+	<br>
 	<div class="progress">
 		<div class="progress-bar progress-bar-success" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: {{ progress }}%;">
     	{{ progress }}%
@@ -64,6 +65,38 @@
 	</div>
 	
 	<h3>League Table</h3>
+	<div class="row">
+		<div class="col-md-10 table-responsive">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th>Position</th>
+						<th>Team</th>
+						<th>User</th>
+						<th>League</th>
+						<th>Points</th>
+						<th>Correct Golds</th>
+					</tr>
+				</thead>
+				<tbody>
+				{% for rank, team in teams_and_ranks %}
+					{% if user and team.user == page_user %}
+						<tr class="info">
+					{% else %}
+						<tr>
+					{% endif %}
+							<td><b>{{ rank }}.</b></td>
+							<td><a href="{{ team.get_absolute_url }}">{{ team.name }}</td>
+							<td>{{ team.user }} </td>
+							<td>{{ team.league.name }} </td>
+							<td>{{ team.points }} </td>
+							<td>{{ team.correct_golds }} </td>
+						</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
 {% endif %}
 
 {% endblock %}

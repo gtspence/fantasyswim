@@ -32,6 +32,8 @@ def rank_teams(teams):
 			prev_score = team.std_points()
 	return zip(places, sorted_teams)
 
+# rank_teams(Team.objects.order_by('name'))
+
 @login_required
 def rules(request):
 	return render(request, 'rio/rules.html', context={'title':'Rules', 'update_date': settings.UPDATE_DATE})
@@ -122,10 +124,10 @@ class LeaguesView(generic.ListView):
 @method_decorator(login_required, name='dispatch')
 class OverallView(generic.ListView):
 	template_name = 'rio/overall.html'
-	context_object_name = 'team_list'
+	context_object_name = 'teams_and_ranks'
 	def get_queryset(self):
 		"""Return all the teams."""
-		return sorted(Team.objects.all().order_by('name'), key=lambda a: a.std_points(), reverse=True)
+		return rank_teams(Team.objects.all().order_by('name'))
 	def get_context_data(self, *args, **kwargs):
 		context = super(OverallView, self).get_context_data(*args, **kwargs)
 		context['entries_open'] = settings.ENTRIES_OPEN
@@ -141,7 +143,7 @@ class LeagueView(generic.DetailView):
 				
 	def get_context_data(self, **kwargs):
 		context = super(LeagueView, self).get_context_data(**kwargs)
-		context['league_teams'] = Team.objects.filter(league=context['league']).order_by('name')
+		context['teams_and_ranks'] = rank_teams(Team.objects.filter(league=context['league']).order_by('name'))
 		context['entries_open'] = settings.ENTRIES_OPEN
 		context['progress'] = progress
 		context['title'] = context['league'].name
