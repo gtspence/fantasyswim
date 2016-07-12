@@ -59,6 +59,8 @@ class Team(models.Model):
 		return sum(p for p in team_points if p is not None)
 	def correct_golds(self):
 		return Participant.objects.filter(choice__team=self, points=5).count()
+	def std_points(self):
+		return self.points() * 100 + self.correct_golds()
 	def complete(self):
 		choices_or_wr_events_none = [Choice.objects.filter(team=self, participant=None).count() == 0,
 									self.WR_event != None, self.WR_event2 != None, self.WR_event3 != None]

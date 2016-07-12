@@ -20,6 +20,17 @@ from datetime import datetime
 events_scored = float(sum([event.scored() for event in Event.objects.all()]))
 progress = int(round(events_scored / Event.objects.all().count() * 100))
 
+def rank_teams(teams):
+	sorted_teams = sorted(teams, key=lambda a: a.std_points(), reverse=True)
+	places = []
+	prev_score = None
+	for i, team in enumerate(sorted_teams):
+		if team.std_points() == prev_score:
+			places.append(i)
+		else:
+			places.append(i+1)
+		prev_score = team.std_points()
+	return zip(places, sorted_teams)
 
 @login_required
 def rules(request):
@@ -92,7 +103,7 @@ def user(request, pk):
 				'progress': progress,
 				'number_teams': number_teams,
 				'start_date': start_date,
-				'team_list': sorted(Team.objects.order_by('name'), key=lambda a: (a.points(), a.correct_golds()), reverse=True),
+				'team_list': sorted(Team.objects.order_by('name'), key=lambda a: a.std_points(), reverse=True),
 				})
 
 @method_decorator(login_required, name='dispatch')
@@ -114,7 +125,7 @@ class OverallView(generic.ListView):
 	context_object_name = 'team_list'
 	def get_queryset(self):
 		"""Return all the teams."""
-		return sorted(Team.objects.all().order_by('name'), key=lambda a: (a.points(), a.correct_golds()), reverse=True)
+		return sorted(Team.objects.all().order_by('name'), key=lambda a: a.std_points(), reverse=True)
 	def get_context_data(self, *args, **kwargs):
 		context = super(OverallView, self).get_context_data(*args, **kwargs)
 		context['entries_open'] = settings.ENTRIES_OPEN
