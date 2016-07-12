@@ -80,8 +80,12 @@ class TeamEditEntriesClosedTests(TestCase):
 		user = User.objects.create_user(username='asdfs', email='asdf@example.com', password='xxxx')
 		self.client.force_login(user)
 		rsp = self.client.get('/rio/team_new/')
-		self.assertRedirects(rsp, '/rio/')
+		self.assertRedirects(rsp, '/rio/', target_status_code=302)
 
+
+# class LeagueTests(TestCase):
+# 	
+# 	fixtures = ['test_data2.json']
 
 class TeamEditEntriesOpenTests(TestCase):
 	
@@ -104,7 +108,7 @@ class TeamEditEntriesOpenTests(TestCase):
 		self.client.force_login(user)
 		wrong_team_edit_url = '/rio/team_edit/%s/' % wrong_team.id
 		rsp = self.client.get(wrong_team_edit_url)
-		self.assertEqual(rsp.status_code, 403)
+		self.assertRedirects(rsp, '/rio/', target_status_code=302)
 
 	@override_settings(ENTRIES_OPEN=True)
 	def test_cant_create_second_team(self):

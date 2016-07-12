@@ -196,7 +196,6 @@ def register(request):
 		context)
 
 
-# context = RequestContext(request)
 @login_required
 def league_edit(request, id=None):
 	
@@ -213,6 +212,9 @@ def league_edit(request, id=None):
 			return HttpResponseRedirect(league.get_absolute_url())
 	
 	else:
+		if not settings.ENTRIES_OPEN:
+			messages.warning(request, "Entries closed, you can't create a league")
+			return HttpResponseRedirect(reverse('user', args=(user.id,)))
 		if not Team.objects.filter(user=request.user).exists():
 			messages.warning(request, 'Create a team before you create a league!')
 			return HttpResponseRedirect(reverse('user', args=(user.id,)))	
@@ -220,9 +222,6 @@ def league_edit(request, id=None):
 			league = League.objects.get(creator=user)
 			messages.warning(request, 'You have already created this league!')
 			return HttpResponseRedirect(reverse('league', args=(league.id,)))
-		if not settings.ENTRIES_OPEN:
-			messages.warning(request, "Entries closed, you can't create a league")
-			return HttpResponseRedirect(league.get_absolute_url())
 		title = 'Create a league'
 		league = League(creator=user)
 	
@@ -236,7 +235,10 @@ def league_edit(request, id=None):
 			team = user.team
 			team.league = league
 			team.save()
-			messages.success(request, 'League created!')
+			if id:
+				messages.success(request, 'League edited!')
+			else:
+				messages.success(request, 'League created!')
 			return HttpResponseRedirect(reverse('league', args=(league.id,)))
 
 	return render(request, 'rio/league_edit.html', {'form': form, 'title': title, 'league': league})
