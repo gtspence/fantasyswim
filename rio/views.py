@@ -26,10 +26,10 @@ def rank_teams(teams):
 	prev_score = None
 	for i, team in enumerate(sorted_teams):
 		if team.std_points() == prev_score:
-			places.append(i)
+			places.append(places[-1])
 		else:
 			places.append(i+1)
-		prev_score = team.std_points()
+			prev_score = team.std_points()
 	return zip(places, sorted_teams)
 
 @login_required
