@@ -1,0 +1,72 @@
+{% extends "rio/base.html" %}
+
+{% block content %}
+<h2>{{ league.name }} <small>{{ league.creator }}</small></h2>
+
+{% if league.description %}
+	<p><big>{{ league.description }}</big></p>
+{% endif %}
+<p><big>Number of teams: {{ league.size }}</big></p>
+
+{% if user == league.creator and entries_open %}
+	<a href="{% url 'league_edit' league.id %}"><big>Edit league</big></a>
+{% endif %}
+
+<br>
+{% if entries_open %}
+
+	{% if user.team and user.team.league != league %}
+		<a href="{% url 'team_edit' user.team.id %}"><big>Join this league!</big></a>
+	{% endif %}
+
+	<h3>Teams</h3>
+		{% if league_teams %}
+	<div class="row">
+		<div class="col-md-8 table-responsive">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th>Team</th>
+						<th>User</th>
+						<th>Complete?</th>
+					</tr>
+				</thead>
+				<tbody>
+				{% for team in league_teams %}
+					{% if team.user == user %}
+						<tr class="info">
+					{% else %}
+						<tr>
+					{% endif %}
+							<td><a href="{{ team.get_absolute_url }}">{{ team.name }}</td>
+							<td>{{ team.user }} </td>
+							<td>
+								{% if team.complete %}
+									<span class="glyphicon glyphicon-ok"></span>
+								{% else %}
+									<span class="glyphicon glyphicon-remove"></span>					{% endif %}
+								</td>
+						</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	{% else %}
+		<p><big>No teams yet!</big></p>
+	{% endif %}
+
+
+{% else %}
+	<div class="progress">
+		<div class="progress-bar progress-bar-success" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: {{ progress }}%;">
+    	{{ progress }}%
+  		</div>
+	</div>
+	
+	<h3>League Table</h3>
+{% endif %}
+
+{% endblock %}
+

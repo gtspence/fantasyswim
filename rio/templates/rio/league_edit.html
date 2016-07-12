@@ -1,0 +1,30 @@
+{% extends "rio/base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<h2>{{ title }}</h2>
+<br>
+<div class="row">
+	<div class="col-md-8">
+
+		<form method="post" action="."
+						enctype="multipart/form-data">
+
+			{% csrf_token %}
+
+			{{ form|crispy }}
+
+			<p><big><b>Creator:</b> {{ user }}</big></p>
+			<br>
+			{% if user.team.league and user.team.league != league %}
+				<p><big>Your team will be transferred from your current league into this league</big></p>
+			{% elif not user.team.league %}
+				<p><big>Your team will be automatically entered into this league</big></p>
+			{% endif %}
+		<input class="btn btn-default" type="submit" name="submit" value="Submit" />
+		</form>
+	</div>
+</div>
+{% endblock %}

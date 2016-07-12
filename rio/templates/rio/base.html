@@ -47,8 +47,9 @@
         {% if user.is_authenticated %}
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">        
-            <li><a href="{% url 'events' %}">Events</a></li>
+            <li class="hidden-sm"><a href="{% url 'events' %}">Events</a></li>
            	<li><a href="{% url 'schedule' %}">Schedule</a></li>
+           	<li><a href="{% url 'leagues' %}">Leagues</a></li>
 			<li><a href="{% url 'rules' %}">Rules</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">

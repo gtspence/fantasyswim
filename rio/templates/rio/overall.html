@@ -2,21 +2,7 @@
 
 {% block content %}
 
-<h2>Fantasy Swimming Rio!</h2>
-<br>
-<blockquote>
-	{% if entries_open %}
-		<p class="lead">Entries are <strong>open</strong></p>
-		<p class="lead">{{ start_date|timeuntil }} to go. {{ number_teams }} team{{ number_teams|pluralize }} entered...</p>
-		<p class="lead"><strong>NEW:</strong> <a href="{% url 'leagues' %}">Create and join leagues!</a></p>
-	{% else %}
-		<p class="lead">Entries are now <strong>closed</strong></p>
-	{% endif %}
-</blockquote>
-
-{% if not user.team.name and entries_open %}
-	<p class="lead"><a href="{% url 'team_new' %}">Create Team</a></p>
-{% endif %}
+<h2>Overall League</h2>
 <br>
 
 {% if entries_open %}
@@ -35,14 +21,14 @@
 				</thead>
 				<tbody>
 				{% for team in team_list %}
-					{% if team.user == page_user %}
+					{% if team.user == user %}
 						<tr class="info">
 					{% else %}
 						<tr>
 					{% endif %}
 							<td><a href="{{ team.get_absolute_url }}">{{ team.name }}</td>
-							<td>{{ team.user }} </td>
-							<td>{{ team.league.name }} </td>
+							<td>{{ team.user }}</td>
+							<td>{{ team.league.name }}</td>
 							<td>
 								{% if team.complete %}
 									<span class="glyphicon glyphicon-ok"></span>
@@ -61,8 +47,6 @@
 	{% endif %}
 
 {% else %}
-
-<!-- ENTER USER'S TEAM PERFORMANCE STATS HERE!!! -->
 
 <div class="progress">
   <div class="progress-bar progress-bar-success" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: {{ progress }}%;">

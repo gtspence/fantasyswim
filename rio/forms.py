@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import Team, Event, Swimmer, Participant, Choice
+from .models import Team, Event, Swimmer, Participant, Choice, League
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 
@@ -28,10 +28,16 @@ class UserCreateForm(UserCreationForm):
 		return user
 
 
+class LeagueCreateForm(forms.ModelForm):
+	class Meta:
+		model = League
+		fields = ['name', 'description']
+
+
 class TeamEditForm(forms.ModelForm):
 	class Meta:
 		model = Team
-		fields = ['name']
+		fields = ['name', 'league']
 
 class TeamEditFormWR(forms.ModelForm):
 	def __init__(self, *args, **kwargs):

@@ -5,16 +5,24 @@
 
 {% if user == team.user and entries_open %}
 	{% if not team.complete %}
-		<a href="{% url 'team_edit' team.id %}"><big>Complete your team!</big></a>
+		<p><a href="{% url 'team_edit' team.id %}"><big>Complete your team!</big></a></p>
 	{% else %}
-		<a href="{% url 'team_edit' team.id %}"><big>Edit your team</big></a>
+		<p><a href="{% url 'team_edit' team.id %}"><big>Edit your team</big></a></p>
 	{% endif %}
 {% endif %}
-    
+ 
+  
 {% if not entries_open %}   
-<h2><small>Points: {{ team.points }} &emsp; Correct Golds: {{ team.correct_golds }}</small></h2>
-{% endif %}    
-    
+	<h2><small>Points: {{ team.points }} &emsp; Correct Golds: {{ team.correct_golds }}</small></h2>
+{% endif %}
+
+{% if team.league %}
+	<h3>League:</h3>
+	<p><a href="{% url 'league' team.league.id %}"><big>{{ team.league.name }}</big></a></p>
+{% elif entries_open and user == team.user %}
+	<p><a href="{% url 'team_edit' team.id %}"><big>Join a League!</big></a></p>
+{% endif %}
+
 <h3>Choices:</h3>
 
 {% if user == team.user or not entries_open %}

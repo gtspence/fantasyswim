@@ -2,9 +2,9 @@ from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.template import loader, RequestContext
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import authenticate, login
-from .forms import UserCreateForm, TeamEditForm, TeamEditFormWR, ChoiceEditForm, ContactForm
+from .forms import UserCreateForm, TeamEditForm, TeamEditFormWR, ChoiceEditForm, ContactForm, LeagueCreateForm
 from django.contrib.auth.decorators import login_required
-from .models import User, Team, Event, Swimmer, Participant, Choice
+from .models import User, Team, Event, Swimmer, Participant, Choice, League
 from django.views import generic
 from django.utils.decorators import method_decorator
 from django.core.urlresolvers import reverse
@@ -16,6 +16,10 @@ from django.contrib.sites.shortcuts import get_current_site
 from operator import attrgetter
 from django.db.models import Count
 from datetime import datetime
+
+events_scored = float(sum([event.scored() for event in Event.objects.all()]))
+progress = int(round(events_scored / Event.objects.all().count() * 100))
+
 
 @login_required
 def rules(request):
@@ -78,10 +82,7 @@ def user(request, pk):
 	if page_user.id != request.user.id and not request.user.is_superuser:
 		messages.warning(request, "You just tried to access the wrong user page")
 		return HttpResponseRedirect('/rio/')
-	
-	events_scored = float(sum([event.scored() for event in Event.objects.all()]))
-	progress = int(round(events_scored / Event.objects.all().count() * 100))
-	
+
 	number_teams = Team.objects.all().count()
 	start_date = datetime.strptime(settings.CLOSING_DATETIME, '%d/%m/%Y %H:%M %Z')
 	
@@ -91,8 +92,49 @@ def user(request, pk):
 				'progress': progress,
 				'number_teams': number_teams,
 				'start_date': start_date,
-				'team_list': sorted(Team.objects.all().order_by('name'), key=lambda a: (a.points(), a.correct_golds()), reverse=True),
+				'team_list': sorted(Team.objects.order_by('name'), key=lambda a: (a.points(), a.correct_golds()), reverse=True),
 				})
+
+@method_decorator(login_required, name='dispatch')
+class LeaguesView(generic.ListView):
+	template_name = 'rio/leagues.html'
+	context_object_name = 'leagues'
+	def get_queryset(self):
+		"""Return all the leagues."""
+		return League.objects.all()
+	def get_context_data(self, *args, **kwargs):
+		context = super(LeaguesView, self).get_context_data(*args, **kwargs)
+		context['title'] = 'Leagues'
+		context['entries_open'] = settings.ENTRIES_OPEN
+		return context
+
+@method_decorator(login_required, name='dispatch')
+class OverallView(generic.ListView):
+	template_name = 'rio/overall.html'
+	context_object_name = 'team_list'
+	def get_queryset(self):
+		"""Return all the teams."""
+		return sorted(Team.objects.all().order_by('name'), key=lambda a: (a.points(), a.correct_golds()), reverse=True)
+	def get_context_data(self, *args, **kwargs):
+		context = super(OverallView, self).get_context_data(*args, **kwargs)
+		context['entries_open'] = settings.ENTRIES_OPEN
+		context['progress'] = progress
+		context['title'] = 'Overall League'
+		return context
+
+
+@method_decorator(login_required, name='dispatch')
+class LeagueView(generic.DetailView):
+	model = League
+	template_name = 'rio/league.html'
+				
+	def get_context_data(self, **kwargs):
+		context = super(LeagueView, self).get_context_data(**kwargs)
+		context['league_teams'] = Team.objects.filter(league=context['league']).order_by('name')
+		context['entries_open'] = settings.ENTRIES_OPEN
+		context['progress'] = progress
+		context['title'] = context['league'].name
+		return context
 
 
 @method_decorator(login_required, name='dispatch')
@@ -152,7 +194,53 @@ def register(request):
 		'rio/register.html',
 		{'user_form':user_form, 'title': 'Register'},
 		context)
+
+
+# context = RequestContext(request)
+@login_required
+def league_edit(request, id=None):
+	
+	user = request.user
+	
+	if id:
+		league = get_object_or_404(League, pk=id)
+		title = 'Edit league'
+		if league.creator != user:
+			messages.warning(request, "You are not the creator of this league!")
+			return HttpResponseRedirect(league.get_absolute_url())
+		if not settings.ENTRIES_OPEN:
+			messages.warning(request, "Entries closed, you can't edit your league")
+			return HttpResponseRedirect(league.get_absolute_url())
+	
+	else:
+		if not Team.objects.filter(user=request.user).exists():
+			messages.warning(request, 'Create a team before you create a league!')
+			return HttpResponseRedirect(reverse('user', args=(user.id,)))	
+		if League.objects.filter(creator=user).exists():
+			league = League.objects.get(creator=user)
+			messages.warning(request, 'You have already created this league!')
+			return HttpResponseRedirect(reverse('league', args=(league.id,)))
+		if not settings.ENTRIES_OPEN:
+			messages.warning(request, "Entries closed, you can't create a league")
+			return HttpResponseRedirect(league.get_absolute_url())
+		title = 'Create a league'
+		league = League(creator=user)
+	
+	form = LeagueCreateForm(request.POST or None, instance=league)
 		
+	if request.method == 'POST':
+		if form.is_valid():
+			league = form.save(commit=False)
+			league.date_created = datetime.now()
+			league.save()
+			team = user.team
+			team.league = league
+			team.save()
+			messages.success(request, 'League created!')
+			return HttpResponseRedirect(reverse('league', args=(league.id,)))
+
+	return render(request, 'rio/league_edit.html', {'form': form, 'title': title, 'league': league})
+
 
 @login_required
 def team_edit(request, id=None):
