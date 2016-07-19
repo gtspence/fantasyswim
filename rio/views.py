@@ -32,7 +32,26 @@ def rank_teams(teams):
 			prev_score = team.std_points()
 	return zip(places, sorted_teams)
 
-# rank_teams(Team.objects.order_by('name'))
+def league_position(team, league=False):
+	team_std_pts = team.std_points()
+	if league:
+		league_teams = Team.objects.filter(league=team.league)
+	else:
+		league_teams = Team.objects.all()
+	position = sum([team.std_points() > team_std_pts for team in league_teams]) + 1
+	joint = sum([team.std_points() == team_std_pts for team in league_teams]) > 1
+	return {'position': position, 'joint': joint}
+
+SUFFIXES = {1: 'st', 2: 'nd', 3: 'rd'}
+def ordinal(num):
+    # I'm checking for 10-20 because those are the digits that
+    # don't follow the normal counting scheme. 
+    if 10 <= num % 100 <= 20:
+        suffix = 'th'
+    else:
+        # the second parameter is a default.
+        suffix = SUFFIXES.get(num % 10, 'th')
+    return "{:,}".format(num) + suffix
 
 @login_required
 def rules(request):
@@ -105,7 +124,7 @@ def user(request, pk):
 				'progress': progress,
 				'number_teams': number_teams,
 				'start_date': start_date,
-				'team_list': sorted(Team.objects.order_by('name'), key=lambda a: a.std_points(), reverse=True),
+				'team_list': sorted(Team.objects.order_by('name').select_related('league'), key=lambda a: a.std_points(), reverse=True),
 				})
 
 @method_decorator(login_required, name='dispatch')
@@ -154,12 +173,22 @@ class LeagueView(generic.DetailView):
 class TeamView(generic.DetailView):
 	model = Team
 	template_name = 'rio/team.html'
-				
+	
 	def get_context_data(self, **kwargs):
 		context = super(TeamView, self).get_context_data(**kwargs)
 		context['team_choices'] = Choice.objects.filter(team=context['team']).order_by('event_id')
 		context['entries_open'] = settings.ENTRIES_OPEN
 		context['title'] = context['team'].name
+		
+		overall_position = league_position(context['team'])
+		context['overall_position'] = ordinal(overall_position['position'])
+		context['overall_joint'] = overall_position['joint']
+		
+		if context['team'].league:
+			minileague_position = league_position(context['team'], True)
+			context['league_position'] = ordinal(minileague_position['position'])
+			context['league_joint'] = minileague_position['joint']
+		
 		return context
 
 
@@ -170,9 +199,9 @@ class EventView(generic.DetailView):
 	
 	def get_context_data(self, *args, **kwargs):
 		context = super(EventView, self).get_context_data(*args, **kwargs)
-		context['gold'] = Participant.objects.filter(event=context['event'], points=5)
-		context['silver'] = Participant.objects.filter(event=context['event'], points=2)
-		context['bronze'] = Participant.objects.filter(event=context['event'], points=1)		
+		context['gold'] = context['event'].participant_set.filter(points=5)
+		context['silver'] = context['event'].participant_set.filter(points=2)
+		context['bronze'] = context['event'].participant_set.filter(points=1)		
 		context['entries_open'] = settings.ENTRIES_OPEN
 		context['title'] = context['event'].name
 		context['participant_list'] = sorted(context['event'].participant_set.all(), key=lambda a: a.choice_count(), reverse=True)

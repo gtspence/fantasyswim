@@ -14,11 +14,23 @@
   
 {% if not entries_open %}   
 	<h2><small>Points: {{ team.points }} &emsp; Correct Golds: {{ team.correct_golds }}</small></h2>
+	<h2><small>Overall Position: 
+	{% if overall_joint %}
+		Joint 
+	{% endif %}
+	{{ overall_position }}</small></h2>
 {% endif %}
 
 {% if team.league %}
 	<h3>League:</h3>
 	<p><a href="{% url 'league' team.league.id %}"><big>{{ team.league.name }}</big></a></p>
+	{% if not entries_open %}
+		<h2><small>League Position:  
+		{% if league_joint %}
+			Joint 
+		{% endif %}
+		{{ league_position }}</small></h2>
+	{% endif %}
 {% elif entries_open and user == team.user %}
 	<p><a href="{% url 'team_edit' team.id %}"><big>Join a League!</big></a></p>
 {% endif %}
