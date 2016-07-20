@@ -4,7 +4,7 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import authenticate, login
 from .forms import UserCreateForm, TeamEditForm, TeamEditFormWR, ChoiceEditForm, ContactForm, LeagueCreateForm
 from django.contrib.auth.decorators import login_required
-from .models import User, Team, Event, Swimmer, Participant, Choice, League
+from .models import User, Team, Event, Swimmer, Participant, Choice, League, News
 from django.views import generic
 from django.utils.decorators import method_decorator
 from django.core.urlresolvers import reverse
@@ -14,7 +14,7 @@ from django.contrib import messages
 from django.template import loader
 from django.contrib.sites.shortcuts import get_current_site
 from operator import attrgetter
-from django.db.models import Count
+from django.db.models import Count, Q
 from datetime import datetime
 
 events_scored = float(sum([event.scored() for event in Event.objects.all()]))
@@ -118,6 +118,8 @@ def user(request, pk):
 	number_teams = Team.objects.all().count()
 	start_date = datetime.strptime(settings.CLOSING_DATETIME, '%d/%m/%Y %H:%M %Z')
 	
+	user_news = News.objects.filter(Q(user=page_user) | Q(all_users=True))
+	
 	return render(request, 'rio/user.html', 
 				{'page_user': page_user, 
 				'entries_open': settings.ENTRIES_OPEN,
@@ -125,6 +127,7 @@ def user(request, pk):
 				'number_teams': number_teams,
 				'start_date': start_date,
 				'team_list': sorted(Team.objects.order_by('name').select_related('league'), key=lambda a: a.std_points(), reverse=True),
+				'user_news': user_news,
 				})
 
 @method_decorator(login_required, name='dispatch')
@@ -199,9 +202,6 @@ class EventView(generic.DetailView):
 	
 	def get_context_data(self, *args, **kwargs):
 		context = super(EventView, self).get_context_data(*args, **kwargs)
-		context['gold'] = context['event'].participant_set.filter(points=5)
-		context['silver'] = context['event'].participant_set.filter(points=2)
-		context['bronze'] = context['event'].participant_set.filter(points=1)		
 		context['entries_open'] = settings.ENTRIES_OPEN
 		context['title'] = context['event'].name
 		context['participant_list'] = sorted(context['event'].participant_set.all(), key=lambda a: a.choice_count(), reverse=True)

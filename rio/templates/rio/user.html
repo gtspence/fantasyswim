@@ -62,14 +62,24 @@
 
 {% else %}
 
-<!-- ENTER USER'S TEAM PERFORMANCE STATS HERE!!! -->
+	<!-- ENTER USER'S TEAM PERFORMANCE STATS HERE!!! -->
+	<h3>Progress</h3>
+	<div class="progress">
+	  <div class="progress-bar progress-bar-success" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: {{ progress }}%;">
+		{{ progress }}%
+	  </div>
+	</div>
 
-<div class="progress">
-  <div class="progress-bar progress-bar-success" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: {{ progress }}%;">
-    {{ progress }}%
-  </div>
-</div>
-
+	<h3>News</h3>
+	<div class="row">
+		<div class="col-md-12">
+			<ul class="list-group">	
+			{% for item in user_news %}
+				<li class="list-group-item"><strong>{{ item.date }}</strong> {{ item.text }}</li>
+			{% endfor %}
+			</ul>
+		</div>
+	</div>
 
 {% endif %}
 

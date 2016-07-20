@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.db.models import Sum
+from datetime import datetime
 
 
 class Event(models.Model):
@@ -15,7 +16,13 @@ class Event(models.Model):
 	def get_absolute_url(self):
 		return reverse('event', args=(self.id,))
 	def scored(self):
-		return Participant.objects.filter(event=self, points=5).exists()
+		return self.participant_set.filter(points=5).exists()
+	def gold(self):
+		return self.participant_set.filter(points=5).select_related('swimmer')
+	def silver(self):
+		return self.participant_set.filter(points=2).select_related('swimmer')
+	def bronze(self):
+		return self.participant_set.filter(points=1).select_related('swimmer')
 	class Meta:
 		ordering = ['id']
 
@@ -67,7 +74,6 @@ class Team(models.Model):
 		return all(choices_or_wr_events_none)
 
 
-	
 class Swimmer(models.Model):
 	name = models.CharField(max_length=200)
 	country = models.CharField(max_length=200)
@@ -105,12 +111,27 @@ class Choice(models.Model):
 	team = models.ForeignKey(Team)
 	event = models.ForeignKey(Event)
 	participant = models.ForeignKey(Participant, blank=True, null=True)
- 	def points(self):
- 		if self.participant:
- 			return self.participant.points
- 		else:
- 			return None
- 	def __str__(self):
- 		return '%s: %s' % (self.team, self.event)
+	def points(self):
+		if self.participant:
+			return self.participant.points
+		else:
+			return None
+	def __str__(self):
+		return '%s: %s' % (self.team, self.event)
 	class Meta:
 		unique_together = ('team', 'event')
+
+class News(models.Model):
+	text = models.CharField(max_length=300)
+	date_time = models.DateTimeField("Date")
+	def date(self):
+		return self.date_time.date()
+	all_users = models.BooleanField(default=False)
+	event = models.ForeignKey(Event, on_delete=models.SET_NULL, blank=True, null=True)
+	user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
+	team = models.ForeignKey(Team, on_delete=models.SET_NULL, blank=True, null=True)
+	league = models.ForeignKey(League, on_delete=models.SET_NULL, blank=True, null=True)
+	class Meta:
+		ordering = ['-date_time']
+	def __str__(self):
+		return 'News item %d' % (self.id)
