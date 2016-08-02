@@ -183,7 +183,7 @@ class TeamView(generic.DetailView):
 	
 	def get_context_data(self, **kwargs):
 		context = super(TeamView, self).get_context_data(**kwargs)
-		context['team_choices'] = Choice.objects.filter(team=context['team']).select_related('participant').order_by('event_id')
+		context['team_choices'] = Choice.objects.filter(team=context['team']).select_related('participant__swimmer').order_by('event_id')
 		context['entries_open'] = settings.ENTRIES_OPEN
 		context['title'] = context['team'].name
 		
