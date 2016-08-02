@@ -40,9 +40,9 @@
 					{% else %}
 						<tr>
 					{% endif %}
-							<td><a href="{{ team.get_absolute_url }}">{{ team.name }}</td>
+							<td><a href="{{ team.get_absolute_url }}">{{ team.name }}</a></td>
 							<td>{{ team.user }} </td>
-							<td>{{ team.league.name }} </td>
+							<td><a href="{{ team.league.get_absolute_url }}">{{ team.league.name }}</a></td>
 							<td>
 								{% if team.complete %}
 									<span class="glyphicon glyphicon-ok"></span>

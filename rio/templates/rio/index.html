@@ -4,11 +4,14 @@
 
 <div class="jumbotron">
 	<h2>Welcome to Fantasy Swimming Rio!</h2>
+	<p>
 	{% if entries_open %}
-		<p>Entries are <strong>open</strong></p>
+		Entries are <strong>open</strong><br>
 	{% else %}
-		<p>Entries are now <strong>closed</strong></p>
+		Entries are now <strong>closed</strong><br>
 	{% endif %}
+	<strong>{{ number_teams }}</strong> team{{ number_teams|pluralize }} entered
+	</p>
 	<p>
 		<a class="btn btn-default btn-lg" href="{% url 'login' %}" role="button">Login</a>
 		{% if entries_open %}

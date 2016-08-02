@@ -103,10 +103,14 @@ class ScheduleView(generic.ListView):
 
 
 def index(request):
+	number_teams = Team.objects.all().count()
 	if request.user.is_authenticated():
 		return HttpResponseRedirect(reverse('user', args=(request.user.id,)))
 	else:
-		return render(request, 'rio/index.html', {'entries_open': settings.ENTRIES_OPEN})
+		return render(request, 'rio/index.html', 
+					{'entries_open': settings.ENTRIES_OPEN,
+					'number_teams': number_teams,
+					})
 
 @login_required
 def user(request, pk):
