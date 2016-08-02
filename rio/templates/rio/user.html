@@ -30,7 +30,7 @@
 						<th>Team</th>
 						<th>User</th>
 						<th>League</th>
-						<th>Complete?</th>
+<!-- 						<th>Complete?</th> -->
 					</tr>
 				</thead>
 				<tbody>
@@ -43,12 +43,14 @@
 							<td><a href="{{ team.get_absolute_url }}">{{ team.name }}</a></td>
 							<td>{{ team.user }} </td>
 							<td><a href="{{ team.league.get_absolute_url }}">{{ team.league.name }}</a></td>
-							<td>
+							<!-- 
+<td>
 								{% if team.complete %}
 									<span class="glyphicon glyphicon-ok"></span>
 								{% else %}
 									<span class="glyphicon glyphicon-remove"></span>					{% endif %}
 								</td>
+ -->
 						</tr>
 				{% endfor %}
 				</tbody>
