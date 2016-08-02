@@ -59,6 +59,7 @@ class Team(models.Model):
 	def get_absolute_url(self):
 		return reverse('team', args=(self.id,))
 	def points(self):
+# 		self.participant_set.aggregate(Sum('points'))
 		team_points = [Participant.objects.filter(choice__team=self).aggregate(Sum('points'))['points__sum']]
 		for nomination in [self.WR_event, self.WR_event2, self.WR_event3]:
 			if nomination:

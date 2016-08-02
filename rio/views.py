@@ -150,10 +150,10 @@ class LeaguesView(generic.ListView):
 @method_decorator(login_required, name='dispatch')
 class OverallView(generic.ListView):
 	template_name = 'rio/overall.html'
-	context_object_name = 'teams_and_ranks'
+	context_object_name = 'teams'
 	def get_queryset(self):
 		"""Return all the teams."""
-		return rank_teams(Team.objects.all().select_related('league').order_by('name'))
+		return Team.objects.all().select_related('league').order_by('name')
 	def get_context_data(self, *args, **kwargs):
 		context = super(OverallView, self).get_context_data(*args, **kwargs)
 		context['entries_open'] = settings.ENTRIES_OPEN
