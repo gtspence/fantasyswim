@@ -130,7 +130,7 @@ def user(request, pk):
 				'progress': progress,
 				'number_teams': number_teams,
 				'start_date': start_date,
-				'team_list': sorted(Team.objects.order_by('name').select_related('league'), key=lambda a: a.std_points(), reverse=True),
+				'team_list': Team.objects.order_by('name').select_related('league').select_related('user'),
 				'user_news': user_news,
 				})
 
@@ -153,7 +153,7 @@ class OverallView(generic.ListView):
 	context_object_name = 'teams'
 	def get_queryset(self):
 		"""Return all the teams."""
-		return Team.objects.all().select_related('league').order_by('name')
+		return Team.objects.all().select_related('league').select_related('user').order_by('name')
 	def get_context_data(self, *args, **kwargs):
 		context = super(OverallView, self).get_context_data(*args, **kwargs)
 		context['entries_open'] = settings.ENTRIES_OPEN
@@ -183,18 +183,18 @@ class TeamView(generic.DetailView):
 	
 	def get_context_data(self, **kwargs):
 		context = super(TeamView, self).get_context_data(**kwargs)
-		context['team_choices'] = Choice.objects.filter(team=context['team']).select_related('participant__swimmer').order_by('event_id')
+		context['team_choices'] = Choice.objects.filter(team=context['team']).select_related('participant__swimmer').select_related('event').order_by('event_id')
 		context['entries_open'] = settings.ENTRIES_OPEN
 		context['title'] = context['team'].name
 		
-		overall_position = league_position(context['team'])
-		context['overall_position'] = ordinal(overall_position['position'])
-		context['overall_joint'] = overall_position['joint']
+# 		overall_position = league_position(context['team'])
+# 		context['overall_position'] = ordinal(overall_position['position'])
+# 		context['overall_joint'] = overall_position['joint']
 		
-		if context['team'].league:
-			minileague_position = league_position(context['team'], True)
-			context['league_position'] = ordinal(minileague_position['position'])
-			context['league_joint'] = minileague_position['joint']
+# 		if context['team'].league:
+# 			minileague_position = league_position(context['team'], True)
+# 			context['league_position'] = ordinal(minileague_position['position'])
+# 			context['league_joint'] = minileague_position['joint']
 		
 		return context
 
