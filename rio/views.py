@@ -153,7 +153,7 @@ class OverallView(generic.ListView):
 	context_object_name = 'teams_and_ranks'
 	def get_queryset(self):
 		"""Return all the teams."""
-		return rank_teams(Team.objects.all().order_by('name'))
+		return rank_teams(Team.objects.all().select_related('league').order_by('name'))
 	def get_context_data(self, *args, **kwargs):
 		context = super(OverallView, self).get_context_data(*args, **kwargs)
 		context['entries_open'] = settings.ENTRIES_OPEN
