@@ -13,23 +13,13 @@
 				<tr>
 					<th>Event</th>
 					<th>Date</th>
-					<th>Scored?</th>
 				</tr>
 			</thead>
 			<tbody>
 			{% for event in schedule %}
-				{% if event.scored %}
-					<tr class="success">
-				{% else %}
 					<tr>
-				{% endif %}
 						<td><a href="{{ event.get_absolute_url }}">{{ event.name }}</a></td>
 						<td>{{ event.date }} </td>
-						<td>
-							{% if event.scored %}
-								<span class="glyphicon glyphicon-ok"></span>
-							{% endif %}
-						</td>
 					</tr>
 			{% endfor %}
 			</tbody>

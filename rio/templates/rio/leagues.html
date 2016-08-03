@@ -28,7 +28,7 @@
 			</thead>
 			<tbody>
 			{% for league in leagues %}
-				{% if league == user.team.league %}
+				{% if league in user_team_league %}
 					<tr class="info">
 				{% else %}
 					<tr>

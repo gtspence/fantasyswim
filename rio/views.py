@@ -140,11 +140,12 @@ class LeaguesView(generic.ListView):
 	context_object_name = 'leagues'
 	def get_queryset(self):
 		"""Return all the leagues."""
-		return League.objects.all()
+		return League.objects.all().select_related('creator')
 	def get_context_data(self, *args, **kwargs):
 		context = super(LeaguesView, self).get_context_data(*args, **kwargs)
 		context['title'] = 'Leagues'
 		context['entries_open'] = settings.ENTRIES_OPEN
+		context['user_team_league'] = League.objects.filter(team__user=self.request.user)
 		return context
 
 @method_decorator(login_required, name='dispatch')
@@ -169,7 +170,7 @@ class LeagueView(generic.DetailView):
 				
 	def get_context_data(self, **kwargs):
 		context = super(LeagueView, self).get_context_data(**kwargs)
-		context['teams_and_ranks'] = rank_teams(Team.objects.filter(league=context['league']).order_by('name'))
+		context['teams'] = Team.objects.filter(league=context['league']).select_related('user').order_by('name')
 		context['entries_open'] = settings.ENTRIES_OPEN
 		context['progress'] = progress
 		context['title'] = context['league'].name
