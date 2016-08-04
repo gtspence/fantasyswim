@@ -17,8 +17,9 @@ from operator import attrgetter
 from django.db.models import Count, Q
 from datetime import datetime
 
-events_scored = float(sum([event.scored() for event in Event.objects.all()]))
-progress = int(round(events_scored / Event.objects.all().count() * 100))
+def get_progress():
+	events_scored = float(sum([event.scored() for event in Event.objects.all()]))
+	return int(round(events_scored / Event.objects.all().count() * 100))
 
 def rank_teams(teams):
 	sorted_teams = sorted(teams, key=lambda a: a.std_points(), reverse=True)
@@ -127,7 +128,7 @@ def user(request, pk):
 	return render(request, 'rio/user.html', 
 				{'page_user': page_user, 
 				'entries_open': settings.ENTRIES_OPEN,
-				'progress': progress,
+				'progress': get_progress(),
 				'number_teams': number_teams,
 				'start_date': start_date,
 				'team_list': Team.objects.order_by('name').select_related('league').select_related('user'),
@@ -158,7 +159,7 @@ class OverallView(generic.ListView):
 	def get_context_data(self, *args, **kwargs):
 		context = super(OverallView, self).get_context_data(*args, **kwargs)
 		context['entries_open'] = settings.ENTRIES_OPEN
-		context['progress'] = progress
+		context['progress'] = get_progress()
 		context['title'] = 'Overall League'
 		return context
 
@@ -172,7 +173,7 @@ class LeagueView(generic.DetailView):
 		context = super(LeagueView, self).get_context_data(**kwargs)
 		context['teams'] = Team.objects.filter(league=context['league']).select_related('user').order_by('name')
 		context['entries_open'] = settings.ENTRIES_OPEN
-		context['progress'] = progress
+		context['progress'] = get_progress()
 		context['title'] = context['league'].name
 		return context
 
