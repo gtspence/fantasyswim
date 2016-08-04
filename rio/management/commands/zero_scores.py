@@ -42,36 +42,3 @@ class Command(BaseCommand):
 		event.scored = True
 		event.save()
 		self.stdout.write(self.style.SUCCESS('Successfully updated zero scores and event.scored for "%s"' % options['event_name']))
-		
-# 		if News.objects.filter(event=event).exists():
-# 			self.stdout.write(self.style.ERROR('**NEWS ITEMS ALREADY EXIST FOR "%s"**' % options['event_name']))
-# 		else:
-# 			for team in Team.objects.all():
-# 				text = str(event) + " result: "
-# 				if event.gold():
-# 					for person in event.gold():
-# 						text += str(person.swimmer) + " "
-# 					text += "won gold, "
-# 				text += "you scored "
-# 				if team.choice_set.get(event=event).participant == None:
-# 					text += "0"
-# 				else:
-# 					text += str(team.choice_set.get(event=event).points()) 
-# 				if team.choice_set.get(event=event).points() == 1:
-# 					text += " point. You are now "
-# 				else:
-# 					text += " points. You are now "
-# 				if league_position(team)['joint']:
-# 					text += "joint "
-# 				text += ordinal(league_position(team)['position']) + " overall"
-# 				if team.league:
-# 					text += " and " + ordinal(league_position(team, team.league)['position']) + " in your league"
-# 				text += "."
-# 				News.objects.create(
-# 					text=text,
-# 					date_time=datetime.now(),
-# 					event=event,
-# 					user=team.user,
-# 					team=team,
-# 					)
-# 			self.stdout.write(self.style.SUCCESS('Successfully created news items for "%s"' % options['event_name']))

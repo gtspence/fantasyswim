@@ -18,8 +18,7 @@ from django.db.models import Count, Q
 from datetime import datetime
 
 def get_progress():
-	events_scored = float(sum([event.scored() for event in Event.objects.all()]))
-	return int(round(events_scored / Event.objects.all().count() * 100))
+	return int(round(float(Event.objects.filter(scored=True).count()) / Event.objects.all().count() * 100))
 
 def rank_teams(teams):
 	sorted_teams = sorted(teams, key=lambda a: a.std_points(), reverse=True)

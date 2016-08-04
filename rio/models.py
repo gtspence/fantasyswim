@@ -11,12 +11,11 @@ class Event(models.Model):
 	order = models.IntegerField("Event Number", null=True, blank=True)
 	relay = models.BooleanField(default=False)
 	wr = models.BooleanField(default=False)
+	scored = models.BooleanField(default=False)
 	def __str__(self):
 		return self.name
 	def get_absolute_url(self):
 		return reverse('event', args=(self.id,))
-	def scored(self):
-		return self.participant_set.filter(points=5).exists()
 	def gold(self):
 		return self.participant_set.filter(points=5).select_related('swimmer')
 	def silver(self):
