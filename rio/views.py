@@ -49,16 +49,15 @@ def get_all_teams():
 		).annotate(std_points=F('total_points')*100+F('correct_golds')).order_by('-std_points', 'name')
 
 def rank_teams(teams):
-	sorted_teams = sorted(teams, key=lambda a: a.std_points(), reverse=True)
 	places = []
 	prev_score = None
-	for i, team in enumerate(sorted_teams):
-		if team.std_points() == prev_score:
+	for i, team in enumerate(teams):
+		if team.std_points == prev_score:
 			places.append(places[-1])
 		else:
 			places.append(i+1)
-			prev_score = team.std_points()
-	return zip(places, sorted_teams)
+			prev_score = team.std_points
+	return zip(places, teams)
 
 def league_position(team, league=False):
 	team_std_pts = team.std_points()
@@ -179,13 +178,16 @@ class LeaguesView(generic.ListView):
 @method_decorator(login_required, name='dispatch')
 class OverallView(generic.ListView):
 	template_name = 'rio/overall.html'
-	context_object_name = 'teams'
-	def get_queryset(self):
-		"""Return all the teams."""
-		if settings.ENTRIES_OPEN:
+	if settings.ENTRIES_OPEN:
+		context_object_name = 'teams'
+		def get_queryset(self):
+			"""Return all the teams."""
 			return get_all_teams().select_related('league').select_related('user')
-		else:
-			return get_all_teams().exclude(std_points=None).select_related('user')
+	else:
+		context_object_name = 'ranks_and_teams'
+		def get_queryset(self):
+			"""Return all the teams and their ranks."""
+			return rank_teams(get_all_teams().exclude(std_points=None).select_related('user'))
 	def get_context_data(self, *args, **kwargs):
 		context = super(OverallView, self).get_context_data(*args, **kwargs)
 		context['entries_open'] = settings.ENTRIES_OPEN
@@ -201,7 +203,10 @@ class LeagueView(generic.DetailView):
 				
 	def get_context_data(self, **kwargs):
 		context = super(LeagueView, self).get_context_data(**kwargs)
-		context['teams'] = Team.objects.filter(league=context['league']).select_related('user').order_by('name')
+		if settings.ENTRIES_OPEN:
+			context['teams'] = get_all_teams().filter(league=context['league']).select_related('user')
+		else:
+			context['ranks_and_teams'] = rank_teams(get_all_teams().filter(league=context['league']).exclude(std_points=None).select_related('user'))
 		context['entries_open'] = settings.ENTRIES_OPEN
 		context['progress'] = get_progress()
 		context['title'] = context['league'].name

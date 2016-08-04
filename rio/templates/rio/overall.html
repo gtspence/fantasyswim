@@ -61,7 +61,18 @@
 					</tr>
 				</thead>
 				<tbody>
-				{% for team in teams %}
+				{% for rank, team in ranks_and_teams %}
+<!-- 
+					{% if forloop.counter|divisibleby:25 %}
+						<tr>
+							<th>Position</th>
+							<th>Team</th>
+							<th>User</th>
+							<th>Points</th>
+							<th>Golds</th>
+						</tr>
+						{% endif %}
+ -->
 					{% if user == team.user %}
 						<tr class="info">
 					{% else %}
