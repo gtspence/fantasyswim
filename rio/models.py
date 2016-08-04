@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.db.models import Sum
 from datetime import datetime
-
+from django.utils.encoding import python_2_unicode_compatible
 
 class Event(models.Model):
 	name = models.CharField(max_length=50)
@@ -26,6 +26,7 @@ class Event(models.Model):
 	class Meta:
 		ordering = ['id']
 
+@python_2_unicode_compatible
 class League(models.Model):
 	creator = models.OneToOneField(User)
 	name = models.CharField("League Name", max_length=100, unique=True)
@@ -40,7 +41,7 @@ class League(models.Model):
 	def __str__(self):
 		return '%s (Created by: %s, Number of teams: %d)' % (self.name, self.creator.username, self.size())
 
-
+@python_2_unicode_compatible
 class Team(models.Model):
 	user = models.OneToOneField(User)
 	name = models.CharField("Team Name", max_length=200)
@@ -122,6 +123,7 @@ class Choice(models.Model):
 	class Meta:
 		unique_together = ('team', 'event')
 
+@python_2_unicode_compatible
 class News(models.Model):
 	text = models.CharField(max_length=300)
 	date_time = models.DateTimeField("Date")

@@ -140,7 +140,7 @@ class LeaguesView(generic.ListView):
 	context_object_name = 'leagues'
 	def get_queryset(self):
 		"""Return all the leagues."""
-		return League.objects.all().select_related('creator')
+		return League.objects.select_related('creator').prefetch_related('team_set')
 	def get_context_data(self, *args, **kwargs):
 		context = super(LeaguesView, self).get_context_data(*args, **kwargs)
 		context['title'] = 'Leagues'
