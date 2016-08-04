@@ -68,7 +68,13 @@
 		<div class="col-md-12">
 			<ul class="list-group">	
 			{% for item in user_news %}
-				<li class="list-group-item"><strong>{{ item.date }}</strong> {{ item.text }}</li>
+				<li class="list-group-item">
+					<strong>{{ item.date }}.</strong> 
+					{% if item.event %}
+						<a href="{{ item.event.get_absolute_url }}">{{ item.event }}</a>:
+					{% endif %}
+					{{ item.text }}
+				</li>
 			{% endfor %}
 			</ul>
 		</div>

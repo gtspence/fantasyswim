@@ -49,7 +49,7 @@
 
 <h3>League Table</h3>
 	<div class="row">
-		<div class="col-md-10 table-responsive">
+		<div class="col-md-12 table-responsive">
 			<table class="table table-hover">
 				<thead>
 					<tr>
@@ -61,8 +61,8 @@
 					</tr>
 				</thead>
 				<tbody>
-				{% for rank, team in teams_and_ranks %}
-					{% if user and team.user == page_user %}
+				{% for team in teams %}
+					{% if user == team.user %}
 						<tr class="info">
 					{% else %}
 						<tr>
@@ -70,8 +70,8 @@
 							<td><b>{{ rank }}.</b></td>
 							<td><a href="{{ team.get_absolute_url }}">{{ team.name }}</td>
 							<td>{{ team.user }} </td>
-							<td>{{ team.points }} </td>
-							<td>{{ team.correct_golds }} </td>
+							<td>{{ team.total_points }}</td>
+							<td>{{ team.correct_golds }}</td>
 						</tr>
 				{% endfor %}
 				</tbody>

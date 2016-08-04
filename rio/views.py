@@ -14,11 +14,39 @@ from django.contrib import messages
 from django.template import loader
 from django.contrib.sites.shortcuts import get_current_site
 from operator import attrgetter
-from django.db.models import Count, Q
+from django.db import models
+from django.db.models import Count, Q, Sum, Case, When, F
 from datetime import datetime
 
 def get_progress():
 	return int(round(float(Event.objects.filter(scored=True).count()) / Event.objects.all().count() * 100))
+
+def get_all_teams():
+	return Team.objects.annotate(
+		total_points=Sum('choice__participant__points') +
+			Case(
+				When(WR_event__wr=True, then=5),
+				default=0,
+				output_field=models.IntegerField()
+				) + 
+			Case(
+				When(WR_event2__wr=True, then=5),
+				default=0,
+				output_field=models.IntegerField()
+				) +
+			Case(
+				When(WR_event3__wr=True, then=5),
+				default=0,
+				output_field=models.IntegerField()
+				),
+		correct_golds=Sum(
+			Case(
+				When(choice__participant__points=5, then=1),
+				default=0,
+				output_field=models.IntegerField()
+				)
+			),
+		).annotate(std_points=F('total_points')*100+F('correct_golds')).order_by('-std_points', 'name')
 
 def rank_teams(teams):
 	sorted_teams = sorted(teams, key=lambda a: a.std_points(), reverse=True)
@@ -122,7 +150,7 @@ def user(request, pk):
 	number_teams = Team.objects.all().count()
 	start_date = datetime.strptime(settings.CLOSING_DATETIME, '%d/%m/%Y %H:%M %Z')
 	
-	user_news = News.objects.filter(Q(user=page_user) | Q(all_users=True))
+	user_news = News.objects.filter(Q(user=page_user) | Q(all_users=True)).select_related('event')
 	
 	return render(request, 'rio/user.html', 
 				{'page_user': page_user, 
@@ -154,7 +182,10 @@ class OverallView(generic.ListView):
 	context_object_name = 'teams'
 	def get_queryset(self):
 		"""Return all the teams."""
-		return Team.objects.all().select_related('league').select_related('user').order_by('name')
+		if settings.ENTRIES_OPEN:
+			return get_all_teams().select_related('league').select_related('user')
+		else:
+			return get_all_teams().exclude(std_points=None).select_related('user')
 	def get_context_data(self, *args, **kwargs):
 		context = super(OverallView, self).get_context_data(*args, **kwargs)
 		context['entries_open'] = settings.ENTRIES_OPEN
@@ -209,7 +240,7 @@ class EventView(generic.DetailView):
 		context = super(EventView, self).get_context_data(*args, **kwargs)
 		context['entries_open'] = settings.ENTRIES_OPEN
 		context['title'] = context['event'].name
-		context['participant_list'] = sorted(context['event'].participant_set.all(), key=lambda a: a.choice_count(), reverse=True)
+		context['participant_list'] = sorted(Participant.objects.filter(event=context['event']).prefetch_related('choice_set'), key=lambda a: a.choice_count(), reverse=True)
 		context['user_pick'] = Participant.objects.filter(event=context['event'], choice__team__user=self.request.user)
 		return context
 

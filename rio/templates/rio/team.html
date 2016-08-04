@@ -159,7 +159,7 @@
 								<td>-</td>
 							{% endif %}
 						</tr>
-						{% if team.WR_event.wr2 %}
+						{% if team.WR_event2.wr %}
 							<tr class="success">
 						{% else %}
 							<tr>
@@ -167,7 +167,7 @@
 							{% if team.WR_event2 %}
 								<td><a href="{{ team.WR_event2.get_absolute_url }}">{{ team.WR_event2 }}</a></td>
 								<td>
-									{% if team.WR_event.wr2 %}
+									{% if team.WR_event2.wr %}
 										5
 									{% else %}
 										0
@@ -178,7 +178,7 @@
 								<td>-</td>
 							{% endif %}
 						</tr>
-						{% if team.WR_event.wr3 %}
+						{% if team.WR_event3.wr %}
 							<tr class="success">
 						{% else %}
 							<tr>
@@ -186,7 +186,7 @@
 							{% if team.WR_event3 %}
 								<td><a href="{{ team.WR_event3.get_absolute_url }}">{{ team.WR_event3 }}</a></td>
 								<td>
-									{% if team.WR_event.wr3 %}
+									{% if team.WR_event3.wr %}
 										5
 									{% else %}
 										0
