@@ -133,6 +133,8 @@ class News(models.Model):
 	user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
 	team = models.ForeignKey(Team, on_delete=models.SET_NULL, blank=True, null=True)
 	league = models.ForeignKey(League, on_delete=models.SET_NULL, blank=True, null=True)
+	TYPE_CHOICES = (('result', 'result'), ('wr', 'wr'), ('summary', 'summary'), ('other', 'other'))
+	type = models.CharField(max_length=12, choices=TYPE_CHOICES, default='other')
 	class Meta:
 		ordering = ['-date_time']
 	def __str__(self):

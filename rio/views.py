@@ -59,26 +59,21 @@ def rank_teams(teams):
 			prev_score = team.std_points
 	return zip(places, teams)
 
-def league_position(team, league=False):
-	team_std_pts = team.std_points()
-	if league:
-		league_teams = Team.objects.filter(league=team.league)
-	else:
-		league_teams = Team.objects.all()
-	position = sum([team.std_points() > team_std_pts for team in league_teams]) + 1
-	joint = sum([team.std_points() == team_std_pts for team in league_teams]) > 1
+def league_position(team, teams):
+	position = sum([t.std_points > team.std_points for t in teams]) + 1
+	joint = sum([t.std_points == team.std_points for t in teams]) > 1
 	return {'position': position, 'joint': joint}
 
 SUFFIXES = {1: 'st', 2: 'nd', 3: 'rd'}
 def ordinal(num):
-    # I'm checking for 10-20 because those are the digits that
-    # don't follow the normal counting scheme. 
-    if 10 <= num % 100 <= 20:
-        suffix = 'th'
-    else:
-        # the second parameter is a default.
-        suffix = SUFFIXES.get(num % 10, 'th')
-    return "{:,}".format(num) + suffix
+	# I'm checking for 10-20 because those are the digits that
+	# don't follow the normal counting scheme. 
+	if 10 <= num % 100 <= 20:
+		suffix = 'th'
+	else:
+		# the second parameter is a default.
+		suffix = SUFFIXES.get(num % 10, 'th')
+	return "{:,}".format(num) + suffix
 
 @login_required
 def rules(request):

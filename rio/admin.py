@@ -34,8 +34,8 @@ class ChoiceAdmin(admin.ModelAdmin):
 	list_filter = ['team']
 
 class NewsAdmin(admin.ModelAdmin):
-	list_display = ('date_time', 'text', 'event', 'user', 'team', 'league', 'all_users')
-	list_filter = ['user', 'event']
+	list_display = ('date_time', 'text', 'event', 'user', 'team', 'league', 'all_users', 'type')
+	list_filter = ['user', 'event', 'type']
 
 class LeagueAdmin(admin.ModelAdmin):
 	list_display = ('name', 'creator', 'date_created')
