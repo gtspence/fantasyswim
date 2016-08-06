@@ -241,6 +241,7 @@ class EventView(generic.DetailView):
 		context['entries_open'] = settings.ENTRIES_OPEN
 		context['title'] = context['event'].name
 		context['participant_list'] = sorted(Participant.objects.filter(event=context['event']).prefetch_related('choice_set'), key=lambda a: a.choice_count(), reverse=True)
+		context['total_picks'] = sum([pick.choice_count() for pick in context['participant_list']])
 		context['user_pick'] = Participant.objects.filter(event=context['event'], choice__team__user=self.request.user)
 		return context
 

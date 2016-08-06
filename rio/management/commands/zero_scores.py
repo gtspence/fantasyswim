@@ -13,6 +13,8 @@ class Command(BaseCommand):
 		
 		if event.scored == True:
 			self.stdout.write(self.style.ERROR('**"%s" HAS ALREADY BEEN SCORED**' % options['event_name']))
+		elif len(event.gold()) == 0:
+			self.stdout.write(self.style.ERROR('**"%s" HAS NO GOLD MEDALIST?!?**' % options['event_name']))
 		else:
 			zero_participants = Participant.objects.filter(event=event, points=None)
 
