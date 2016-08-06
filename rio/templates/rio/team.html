@@ -15,10 +15,13 @@
 {% if not entries_open %}   
 	<h2><small>Points: {{ team.points }} &emsp; Correct Golds: {{ team.correct_golds }}</small></h2>
 	<h2><small><a href="{% url 'overall' %}">Overall Position</a>: 
-	{% if overall_joint %}
+	<!-- 
+{% if overall_joint %}
 		Joint 
 	{% endif %}
-	{{ overall_position }} / {{ number_overall_teams }}</small></h2>
+	{{ overall_position }} / {{ number_overall_teams }}
+ -->
+	</small></h2>
 {% endif %}
 
 {% if team.league %}
@@ -27,10 +30,13 @@
 	<p><a href="{% url 'league' team.league.id %}"><big>{{ team.league.name }}</big></a></p>
 	{% else %}
 		<h2><small><a href="{% url 'league' team.league.id %}">League Position</a>:  
-		{% if league_joint %}
+		<!-- 
+{% if league_joint %}
 			Joint 
 		{% endif %}
-		{{ league_position }}  / {{ number_league_teams }} ({{ team.league.name }})</small></h2>
+		{{ league_position }}  / {{ number_league_teams }} ({{ team.league.name }})
+ -->
+		</small></h2>
 	{% endif %}
 	
 {% elif entries_open and user == team.user %}

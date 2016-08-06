@@ -55,7 +55,7 @@
 	
 	{% if team_stats.team %}
 	
-		<h2>{{ team_stats.team.name }} &emsp; <small>{{ team_stats.team.user }}</small></h2>
+		<h2><a href="{{ team_stats.team.get_absolute_url }}">{{ team_stats.team.name }}</a> &emsp; <small>{{ team_stats.team.user }}</small></h2>
 		
 		<h2><small>Points: {{ team_stats.team.points }} &emsp; Correct Golds: {{ team_stats.team.correct_golds }}</small></h2>
 		
