@@ -15,7 +15,8 @@ from django.template import loader
 from django.contrib.sites.shortcuts import get_current_site
 from operator import attrgetter
 from django.db import models
-from django.db.models import Count, Q, Sum, Case, When, F
+from django.db.models import Count, Q, Sum, Case, When, F, Value
+from django.db.models.functions import Coalesce
 from datetime import datetime
 
 def get_progress():
@@ -23,7 +24,7 @@ def get_progress():
 
 def get_all_teams():
 	return Team.objects.annotate(
-		total_points=Sum('choice__participant__points') +
+		total_points=Coalesce(Sum('choice__participant__points'), Value(0)) +
 			Case(
 				When(WR_event__wr=True, then=5),
 				default=0,

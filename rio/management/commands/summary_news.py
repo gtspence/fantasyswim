@@ -4,31 +4,31 @@ from django.db.models import Count, Sum, Case, When, F
 from django.db import models
 
 def get_all_teams():
-	return Team.objects.annotate(
-		total_points=Sum('choice__participant__points') +
-			Case(
-				When(WR_event__wr=True, then=5),
-				default=0,
-				output_field=models.IntegerField()
-				) + 
-			Case(
-				When(WR_event2__wr=True, then=5),
-				default=0,
-				output_field=models.IntegerField()
-				) +
-			Case(
-				When(WR_event3__wr=True, then=5),
-				default=0,
-				output_field=models.IntegerField()
-				),
-		correct_golds=Sum(
-			Case(
-				When(choice__participant__points=5, then=1),
-				default=0,
-				output_field=models.IntegerField()
-				)
-			),
-		).annotate(std_points=F('total_points')*100+F('correct_golds')).order_by('-std_points', 'name')
+ return Team.objects.annotate(
+  total_points=Sum('choice__participant__points') +
+   Case(
+    When(WR_event__wr=True, then=5),
+    default=0,
+    output_field=models.IntegerField()
+    ) + 
+   Case(
+    When(WR_event2__wr=True, then=5),
+    default=0,
+    output_field=models.IntegerField()
+    ) +
+   Case(
+    When(WR_event3__wr=True, then=5),
+    default=0,
+    output_field=models.IntegerField()
+    ),
+  correct_golds=Sum(
+   Case(
+    When(choice__participant__points=5, then=1),
+    default=0,
+    output_field=models.IntegerField()
+    )
+   ),
+  ).annotate(std_points=F('total_points')*100+F('correct_golds')).order_by('-std_points', 'name')
 
 
 def league_position(team, teams):
