@@ -52,17 +52,41 @@
 	{% endif %}
 
 {% else %}
+	
+	{% if team_stats.team %}
+	
+		<h2>{{ team_stats.team.name }} &emsp; <small>{{ team_stats.team.user }}</small></h2>
+		
+		<h2><small>Points: {{ team_stats.team.points }} &emsp; Correct Golds: {{ team_stats.team.correct_golds }}</small></h2>
+		
+		<h2><small><a href="{% url 'overall' %}">Overall Position</a>: 
+			{% if team_stats.overall_joint %}
+				Joint 
+			{% endif %}
+			{{ team_stats.overall_position }} / {{ team_stats.number_overall_teams }}</small></h2>
 
-	<h3><a href="{% url 'overall' %}">View all {{ number_teams }} teams</a></h3>
+			{% if team_stats.team.league %}
+					<h2><small><a href="{% url 'league' team_stats.team.league.id %}">League Position</a>:  
+					{% if team_stats.league_joint %}
+						Joint 
+					{% endif %}
+					{{ team_stats.league_position }}  / {{ team_stats.number_league_teams }} ({{ team_stats.team.league.name }})</small></h2>
+			{% endif %}
+	
+	
+	{% elif team_stats.team == None %}
+		<h3> You don't have a team... <a href="{% url 'overall' %}">View all {{ number_teams }} teams</a></h3>
+	{% endif %}
+	
 	<br>
-	<!-- ENTER USER'S TEAM PERFORMANCE STATS HERE!!! -->
+	
 	<h3>Competition Progress</h3>
 	<div class="progress">
 	  <div class="progress-bar progress-bar-success" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: {{ progress }}%;">
 		{{ progress }}%
 	  </div>
 	</div>
-
+	<br>
 	<h3>News</h3>
 	<div class="row">
 		<div class="col-md-12">

@@ -145,8 +145,25 @@ def user(request, pk):
 	number_teams = Team.objects.all().count()
 	start_date = datetime.strptime(settings.CLOSING_DATETIME, '%d/%m/%Y %H:%M %Z')
 	
-# 	if settings.ENTRIES_OPEN == False:
-# 		if 
+	team_stats = {}
+	
+	if settings.ENTRIES_OPEN == False:
+		if get_all_teams().filter(user=page_user).select_related('league', 'user').exists():
+			team = get_all_teams().get(user=page_user)
+			teams = get_all_teams()
+			team_stats['team'] = team
+			overall_position = league_position(team, teams)
+			team_stats['number_overall_teams'] = len(teams)
+			team_stats['overall_position'] = ordinal(overall_position['position'])
+			team_stats['overall_joint'] = overall_position['joint']
+			if team.league:
+				league_teams = teams.filter(league=team.league)
+				minileague_position = league_position(team, league_teams)
+				team_stats['number_league_teams'] = len(league_teams)
+				team_stats['league_position'] = ordinal(minileague_position['position'])
+				team_stats['league_joint'] = minileague_position['joint']
+		else:
+			team_stats['team'] = None
 	
 	user_news = News.objects.filter(Q(user=page_user) | Q(all_users=True)).select_related('event')
 	
@@ -158,6 +175,7 @@ def user(request, pk):
 				'start_date': start_date,
 				'team_list': Team.objects.order_by('name').select_related('league').select_related('user'),
 				'user_news': user_news,
+				'team_stats': team_stats
 				})
 
 @method_decorator(login_required, name='dispatch')
