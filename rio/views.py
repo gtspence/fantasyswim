@@ -242,14 +242,15 @@ class TeamView(generic.DetailView):
 		context['title'] = context['team'].name
 		
 		teams = get_all_teams()
-		overall_position = league_position(context['team'], teams)
+		team = get_all_teams().select_related('league').get(id=context['team'].id)
+		overall_position = league_position(team, teams)
 		context['number_overall_teams'] = len(teams)
 		context['overall_position'] = ordinal(overall_position['position'])
 		context['overall_joint'] = overall_position['joint']
 		
 		if context['team'].league:
-			league_teams = teams.filter(league=context['team'].league)
-			minileague_position = league_position(context['team'], league_teams)
+			league_teams = teams.filter(league=team.league)
+			minileague_position = league_position(team, league_teams)
 			context['number_league_teams'] = len(league_teams)
 			context['league_position'] = ordinal(minileague_position['position'])
 			context['league_joint'] = minileague_position['joint']
