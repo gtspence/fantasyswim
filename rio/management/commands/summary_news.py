@@ -57,7 +57,7 @@ class Command(BaseCommand):
 
 	def handle(self, *arg, **options):
 		
-		teams = get_all_teams().exclude(std_points=None).select_related('user')
+		teams = get_all_teams().select_related('user')
 		
 		for team in teams:
 			
