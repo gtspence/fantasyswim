@@ -14,8 +14,8 @@
 
 {% if not user.team.name and entries_open %}
 	<p class="lead"><a href="{% url 'team_new' %}">Create Team</a></p>
+	<br>
 {% endif %}
-<br>
 
 {% if entries_open %}
 	<h3>Entered teams</h3>
@@ -53,6 +53,8 @@
 
 {% else %}
 
+	<h3><a href="{% url 'overall' %}">View all {{ number_teams }} teams</a></h3>
+	<br>
 	<!-- ENTER USER'S TEAM PERFORMANCE STATS HERE!!! -->
 	<h3>Competition Progress</h3>
 	<div class="progress">

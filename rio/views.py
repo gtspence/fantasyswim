@@ -145,6 +145,9 @@ def user(request, pk):
 	number_teams = Team.objects.all().count()
 	start_date = datetime.strptime(settings.CLOSING_DATETIME, '%d/%m/%Y %H:%M %Z')
 	
+# 	if settings.ENTRIES_OPEN == False:
+# 		if 
+	
 	user_news = News.objects.filter(Q(user=page_user) | Q(all_users=True)).select_related('event')
 	
 	return render(request, 'rio/user.html', 
@@ -222,12 +225,14 @@ class TeamView(generic.DetailView):
 		
 		teams = get_all_teams()
 		overall_position = league_position(context['team'], teams)
+		context['number_overall_teams'] = len(teams)
 		context['overall_position'] = ordinal(overall_position['position'])
 		context['overall_joint'] = overall_position['joint']
 		
 		if context['team'].league:
 			league_teams = teams.filter(league=context['team'].league)
 			minileague_position = league_position(context['team'], league_teams)
+			context['number_league_teams'] = len(league_teams)
 			context['league_position'] = ordinal(minileague_position['position'])
 			context['league_joint'] = minileague_position['joint']
 		
