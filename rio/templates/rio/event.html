@@ -63,6 +63,14 @@
 	</div>
 {% endif %}
 
+{% if not event.relay %}
+<h3>World Record:</h3>
+<p class="lead">{{ wr_count }} team{{ wr_count|pluralize }} picked this event
+	{% if event.wr %}
+		<span class="label label-success">WORLD RECORD BROKEN!</span>
+	{% endif %}
+</p>
+{% endif %}
 
 <h3>Most Popular Choices:</h3>
 	<div class="row">

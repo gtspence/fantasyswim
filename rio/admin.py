@@ -28,6 +28,7 @@ class SwimmerAdmin(admin.ModelAdmin):
 
 class TeamAdmin(admin.ModelAdmin):
 	list_display = ('user', 'name', 'league', 'points', 'correct_golds')
+	list_filter = ['user']
  
 class ChoiceAdmin(admin.ModelAdmin):
 	list_display = ('event', 'team', 'participant', 'points')
