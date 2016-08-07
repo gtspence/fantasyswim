@@ -77,7 +77,7 @@
 				</tr>
 			</thead>
 			<tbody>
-			{% for part in participant_list %}
+			{% for part, percent in participant_list_percent_zip %}
 				{% if part.choice_count > 0 %}
 					{% if part in user_pick %}
 						<tr class="info">
@@ -96,7 +96,7 @@
 								<span class="label label-danger">Not Swimming</span>
 							{% endif %}
 						</td>
-						<td>{{ part.choice_count }} </td>
+						<td>{{ part.choice_count }} ({{ percent }}%)</td>
 						<td>
 							{% if part.points != None %}
 								{{ part.points }}
