@@ -268,10 +268,10 @@ class EventView(generic.DetailView):
 		context['entries_open'] = settings.ENTRIES_OPEN
 		context['title'] = context['event'].name
 		context['wr_count'] = Team.objects.filter(Q(WR_event=context['event']) | Q(WR_event2=context['event']) | Q(WR_event3=context['event'])).count()
-		context['participant_list'] = sorted(Participant.objects.filter(event=context['event']).prefetch_related('choice_set'), key=lambda a: a.choice_count(), reverse=True)
+		context['participant_list'] = sorted(Participant.objects.select_related('swimmer').filter(event=context['event']).annotate(choice_count=Count('choice')), key=lambda a: a.choice_count, reverse=True)
 		context['total_teams'] = len(get_all_teams())
 # 		context['total_picks'] = sum([pick.choice_count() for pick in context['participant_list']])
-		context['picks_percent'] = [int(round(part.choice_count() / float(context['total_teams']) * 100)) for part in context['participant_list']]
+		context['picks_percent'] = [int(round(part.choice_count / float(context['total_teams']) * 100)) for part in context['participant_list']]
 		context['participant_list_percent_zip'] = zip(context['participant_list'], context['picks_percent'])
 		context['user_pick'] = Participant.objects.filter(event=context['event'], choice__team__user=self.request.user)
 		return context
