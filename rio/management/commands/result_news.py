@@ -4,7 +4,7 @@ from rio.models import User, Team, Swimmer, Participant, Event, Choice, News
 from datetime import datetime
 
 class Command(BaseCommand):
-	help = 'Sets all non-scoring participants in an event to zero points'
+	help = 'Creates event result news items for all users with teams'
 
 	def add_arguments(self, parser):
 		parser.add_argument('event_name')

@@ -2,6 +2,8 @@ from django.core.management.base import BaseCommand, CommandError
 from rio.models import User, Team, Swimmer, Participant, Event, Choice, News
 from django.db.models import Count, Sum, Case, When, F
 from django.db import models
+from django.template import loader
+from django.core.mail import send_mass_mail, EmailMultiAlternatives
 
 def get_all_teams():
  return Team.objects.annotate(
@@ -30,7 +32,6 @@ def get_all_teams():
    ),
   ).annotate(std_points=F('total_points')*100+F('correct_golds')).order_by('-std_points', 'name')
 
-
 def league_position(team, teams):
 	position = sum([t.std_points > team.std_points for t in teams]) + 1
 	joint = sum([t.std_points == team.std_points for t in teams]) > 1
@@ -47,15 +48,15 @@ def ordinal(num):
 		suffix = SUFFIXES.get(num % 10, 'th')
 	return "{:,}".format(num) + suffix
 
-from datetime import datetime
-# 
 class Command(BaseCommand):
-	help = 'Creates summary news items for all users with teams'
+	help = 'Sends email to all users with their summary performance'
 
 	def add_arguments(self, parser):
 		parser.add_argument('time')
 
 	def handle(self, *arg, **options):
+		
+		messages = ()
 		
 		teams = get_all_teams().select_related('user')
 		
@@ -75,7 +76,7 @@ class Command(BaseCommand):
 			else:
 				golds = "%d correct golds" % team.correct_golds
 			
-			text = "%s: Your team has %s and %s." % (options['time'], points, golds)
+			text = "%s: Your team %s has %s and %s." % (options['time'], team.name, points, golds)
 			
 			overall_position = league_position(team, teams)
 			text += " You are now "
@@ -91,11 +92,14 @@ class Command(BaseCommand):
 					text += "joint "
 				text += ordinal(minileague_position['position']) + "/%d in your league" % (len(league_teams))
 			text += "!"
-			News.objects.create(
-				text=text,
-				date_time=datetime.now(),
-				user=team.user,
-				team=team,
-				type='summary',
-				)
-		self.stdout.write(self.style.SUCCESS('Successfully created summary items for "%s"' % options['time']))
+		
+			subject='Fantasy Swimming Rio: %s Update!' % options['time']
+			body = loader.render_to_string('rio/update.html', {'text':text, 'user':team.user})
+			from_email='fantasyswimming@gmail.com'
+			to_email=team.user.email
+			email_message = ((subject, body, from_email, [to_email]),)
+			messages += email_message
+
+		send_mass_mail(messages, fail_silently=False)
+		
+		self.stdout.write(self.style.SUCCESS('Successfully sent all users an email'))

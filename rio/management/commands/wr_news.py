@@ -5,7 +5,7 @@ from django.db.models import Q
 from datetime import datetime
 
 class Command(BaseCommand):
-	help = 'Sets all non-scoring participants in an event to zero points'
+	help = 'Creates WR news items for all users with teams that have nominated that event'
 
 	def add_arguments(self, parser):
 		parser.add_argument('event_name')
