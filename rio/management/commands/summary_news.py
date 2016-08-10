@@ -2,50 +2,8 @@ from django.core.management.base import BaseCommand, CommandError
 from rio.models import User, Team, Swimmer, Participant, Event, Choice, News
 from django.db.models import Count, Sum, Case, When, F
 from django.db import models
+from rio.views import get_all_teams, league_position, SUFFIXES, ordinal
 
-def get_all_teams():
- return Team.objects.annotate(
-  total_points=Sum('choice__participant__points') +
-   Case(
-    When(WR_event__wr=True, then=5),
-    default=0,
-    output_field=models.IntegerField()
-    ) + 
-   Case(
-    When(WR_event2__wr=True, then=5),
-    default=0,
-    output_field=models.IntegerField()
-    ) +
-   Case(
-    When(WR_event3__wr=True, then=5),
-    default=0,
-    output_field=models.IntegerField()
-    ),
-  correct_golds=Sum(
-   Case(
-    When(choice__participant__points=5, then=1),
-    default=0,
-    output_field=models.IntegerField()
-    )
-   ),
-  ).annotate(std_points=F('total_points')*100+F('correct_golds')).order_by('-std_points', 'name')
-
-
-def league_position(team, teams):
-	position = sum([t.std_points > team.std_points for t in teams]) + 1
-	joint = sum([t.std_points == team.std_points for t in teams]) > 1
-	return {'position': position, 'joint': joint}
-
-SUFFIXES = {1: 'st', 2: 'nd', 3: 'rd'}
-def ordinal(num):
-	# I'm checking for 10-20 because those are the digits that
-	# don't follow the normal counting scheme. 
-	if 10 <= num % 100 <= 20:
-		suffix = 'th'
-	else:
-		# the second parameter is a default.
-		suffix = SUFFIXES.get(num % 10, 'th')
-	return "{:,}".format(num) + suffix
 
 from datetime import datetime
 # 
