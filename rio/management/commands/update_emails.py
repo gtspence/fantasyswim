@@ -76,7 +76,7 @@ class Command(BaseCommand):
 			else:
 				golds = "%d correct golds" % team.correct_golds
 			
-			text = "%s: Your team has %s and %s." % (options['time'], points, golds)
+			text = "%s: Your team %s has %s and %s." % (options['time'], team.name, points, golds)
 			
 			overall_position = league_position(team, teams)
 			text += " You are now "
