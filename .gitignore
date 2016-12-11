@@ -5,3 +5,4 @@ staticfiles
 .DS_Store
 db.sqlite3
 local_settings.py
+*.dump

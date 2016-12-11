@@ -71,7 +71,7 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'raygun4py.middleware.django.Provider',
+#     'raygun4py.middleware.django.Provider',
 ]
 
 ROOT_URLCONF = 'fantasyswim.urls'
